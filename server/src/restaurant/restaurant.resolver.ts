@@ -1,5 +1,5 @@
-import { Mutation, Query, Resolver } from '@nestjs/graphql'
-import { Restaurant } from './restaurant.entity'
+import { Query, Resolver } from '@nestjs/graphql'
+import { Restaurant } from './restaurant.schema'
 
 @Resolver()
 export class RestaurantResolver {

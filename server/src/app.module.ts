@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { MongooseModule } from '@nestjs/mongoose'
 import * as Joi from 'joi'
-import { RestaurantModule } from './restaurant/restaurant.module'
+import { RestaurantModule } from './restaurant'
 
 @Module({
   imports: [
