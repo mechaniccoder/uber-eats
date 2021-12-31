@@ -16,9 +16,8 @@ import { RestaurantModule } from './restaurant/restaurant.module'
           ? '.env.prod'
           : '.env.test',
     }),
-    MongooseModule.forRoot('mongodb://localhost:27017', {
-      dbName: 'uber',
-      authSource: 'uber',
+    MongooseModule.forRoot(process.env.DB_URL, {
+      dbName: process.env.DB_NAME,
       family: 4,
     }),
     GraphQLModule.forRoot({
