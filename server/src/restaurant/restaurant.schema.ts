@@ -7,6 +7,8 @@ export interface RestaurantModel extends Model<Restaurant & Document> {}
 @ObjectType({})
 @Schema()
 export class Restaurant {
+  // write "returns" for expression
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Field((type) => String)
   @Prop({
     required: true,

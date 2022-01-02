@@ -1,17 +1,15 @@
 import { Query, Resolver } from '@nestjs/graphql'
 import { Restaurant } from './restaurant.schema'
+import { RestaurantService } from './restaurant.service'
 
 @Resolver()
 export class RestaurantResolver {
-  @Query((returns) => Boolean)
-  isPizzaGood(): boolean {
-    return true
-  }
+  constructor(private restaurantService: RestaurantService) {}
 
-  @Query((returns) => Restaurant)
-  myRestaurant(): Restaurant {
-    return {
-      name: 'seunghwan',
-    }
+  // write "returns" for expression
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Query((returns) => [Restaurant])
+  restaurants(): Promise<Restaurant[]> {
+    return this.restaurantService.findAll()
   }
 }
