@@ -17,3 +17,17 @@ autoSchemaFile 옵션을 활용해서 typescript -> graphql파일을 생성할 �
 어떻게 하면 prototype 방식이 아닌 class의 static키워드를 사용해서 정의할 수 있을지 고민하다가 해결방법을 찾았다.
 
 nest에서 model을 injection해줄때 model에 대한 타입을 extends해서 static method에 관한 타입을 정의해주는 방법을 사용하면 깔끔하게 사용할 수 있다.(src/restaurant/restaurant.schema.ts를 확인해보자.)
+
+### mongoose findOneAndUpdate
+
+document를 업데이트한 뒤에 response로 그 document를 보내는 경우에 findOneAndUpdate라는 api를 사용하면 되는데, options에 `{ new: true }` property를 사용해줘야 한다. 아니면 과거의 업데이트되기 전의 document를 response로 보내주게 된다.
+
+### NestJs container with Promise
+
+service, resolver에서 db와의 상호작용은 비동기로 처리되기 때문에 이 작업이 끝난 뒤에 client로 response를 보내줘야 한다.
+
+그런데 공식문서에서는 pending상태의 promise를 await로 기다려주지 않고 바로 return하는 코드가 작성되어 있었는데, 이는 nestjs의 container가 최상단에서 비동기 작업을 기다려주는 operation이 있다는 것으로 추측했다.(이후에 실제 오픈소스 repository에서 확인해볼 예정이다.)
+
+실험으로 primitive한 값을 promise로 감싸서 resolver, service에서 각각 return을 해줬고, 그 이전에 db document를 업데이트하는 로직을 작성했다. nestjs의 container는 db 업데이트 비동기 작업을 기다리지 않고 primitive한 promise가 이행되는대로 response값을 반환했다. 따라서 db도 업데이트 되지않았다. (이는 아마도 mogoose의 내부적인 buffering, 큐와 연관이 있는 것 같다. 관련 링크는 아래에 첨부하겠다.)
+
+https://mongoosejs.com/docs/connections.html#buffering
