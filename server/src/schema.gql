@@ -9,3 +9,7 @@ type Restaurant {
 type Query {
   restaurants: [Restaurant!]!
 }
+
+type Mutation {
+  createRestaurant(name: String!): Restaurant!
+}

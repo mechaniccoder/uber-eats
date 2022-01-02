@@ -4,7 +4,7 @@ import { Document, Model } from 'mongoose'
 
 export interface RestaurantModel extends Model<Restaurant & Document> {}
 
-@ObjectType({})
+@ObjectType()
 @Schema()
 export class Restaurant {
   // write "returns" for expression
@@ -15,10 +15,6 @@ export class Restaurant {
     type: String,
   })
   name: string
-
-  static findByse(this: RestaurantModel) {
-    return true
-  }
 }
 
 export const RestaurantSchema = SchemaFactory.createForClass(Restaurant)

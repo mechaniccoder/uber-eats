@@ -1,4 +1,5 @@
-import { Query, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { CreateRestaurantDto } from './dto/create-restaurant.dto'
 import { Restaurant } from './restaurant.schema'
 import { RestaurantService } from './restaurant.service'
 
@@ -11,5 +12,15 @@ export class RestaurantResolver {
   @Query((returns) => [Restaurant])
   restaurants(): Promise<Restaurant[]> {
     return this.restaurantService.findAll()
+  }
+
+  @Mutation((returns) => Restaurant)
+  async createRestaurant(@Args() createRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
+    try {
+      return await this.restaurantService.create(createRestaurantDto)
+    } catch (err) {
+      console.log(err)
+      throw err
+    }
   }
 }
