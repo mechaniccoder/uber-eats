@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreateRestaurantDto } from './dto/create-restaurant.dto'
+import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 import { Restaurant } from './restaurant.schema'
 import { RestaurantService } from './restaurant.service'
 
@@ -20,10 +21,16 @@ export class RestaurantResolver {
     @Args('createRestaurantArgs') createRestaurantDto: CreateRestaurantDto,
   ): Promise<Restaurant> {
     try {
-      return await this.restaurantService.create(createRestaurantDto)
+      return this.restaurantService.create(createRestaurantDto)
     } catch (err) {
       console.log(err)
       throw err
     }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Mutation((returns) => Restaurant)
+  async updateRestaurant(@Args('updateRestaurantArgs') updateRestaurant: UpdateRestaurantDto) {
+    return this.restaurantService.update(updateRestaurant)
   }
 }
