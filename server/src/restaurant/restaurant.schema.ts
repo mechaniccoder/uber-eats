@@ -11,10 +11,34 @@ export class Restaurant {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Field((type) => String)
   @Prop({
-    required: true,
     type: String,
+    required: true,
   })
   name: string
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Field((type) => Boolean)
+  @Prop({
+    type: Boolean,
+    required: true,
+  })
+  isVegan: boolean
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Field((type) => String)
+  @Prop({
+    type: String,
+    required: true,
+  })
+  address: string
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Field((type) => String)
+  @Prop({
+    type: String,
+    required: true,
+  })
+  ownerName: string
 }
 
 export const RestaurantSchema = SchemaFactory.createForClass(Restaurant)
