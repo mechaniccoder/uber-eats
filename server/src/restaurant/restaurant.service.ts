@@ -7,7 +7,6 @@ export class RestaurantService {
   constructor(@InjectModel(Restaurant.name) private readonly restaurantModel: RestaurantModel) {}
 
   async findAll(): Promise<Restaurant[]> {
-    const restaurants = await this.restaurantModel.find({})
-    return restaurants
+    return await this.restaurantModel.find({})
   }
 }
