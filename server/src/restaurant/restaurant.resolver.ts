@@ -16,7 +16,9 @@ export class RestaurantResolver {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Mutation((returns) => Restaurant)
-  async createRestaurant(@Args() createRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
+  async createRestaurant(
+    @Args('createRestaurantArgs') createRestaurantDto: CreateRestaurantDto,
+  ): Promise<Restaurant> {
     try {
       return await this.restaurantService.create(createRestaurantDto)
     } catch (err) {

@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { IsBoolean, IsOptional, IsString } from 'class-validator'
 import { Document, Model } from 'mongoose'
 
 export interface RestaurantModel extends Model<Restaurant & Document> {}
@@ -14,14 +15,17 @@ export class Restaurant {
     type: String,
     required: true,
   })
+  @IsString()
   name: string
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Field((type) => Boolean)
+  @Field((type) => Boolean, { defaultValue: false })
   @Prop({
     type: Boolean,
     required: true,
+    default: false,
   })
+  @IsOptional()
   isVegan: boolean
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -30,6 +34,7 @@ export class Restaurant {
     type: String,
     required: true,
   })
+  @IsString()
   address: string
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,6 +43,7 @@ export class Restaurant {
     type: String,
     required: true,
   })
+  @IsString()
   ownerName: string
 }
 
