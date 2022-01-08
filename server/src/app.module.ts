@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { MongooseModule } from '@nestjs/mongoose'
 import * as Joi from 'joi'
 import { RestaurantModule } from './restaurant'
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RestaurantModule } from './restaurant'
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     RestaurantModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],

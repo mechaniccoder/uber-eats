@@ -1,12 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsOptional, IsString } from 'class-validator'
 import { Document, Model } from 'mongoose'
 
 export interface RestaurantModel extends Model<Restaurant & Document> {}
 
 @ObjectType()
-@Schema()
+@Schema({ timestamps: true })
 export class Restaurant {
   // write "returns" for expression
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
