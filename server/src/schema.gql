@@ -9,8 +9,15 @@ type Restaurant {
   ownerName: String!
 }
 
+type User {
+  email: String!
+  password: String!
+  role: String!
+}
+
 type Query {
   restaurants: [Restaurant!]!
+  users: [User!]!
 }
 
 type Mutation {
