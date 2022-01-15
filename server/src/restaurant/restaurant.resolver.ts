@@ -30,7 +30,7 @@ export class RestaurantResolver {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Mutation((returns) => Restaurant)
-  async updateRestaurant(@Args('updateRestaurantArgs') updateRestaurant: UpdateRestaurantDto) {
-    return this.restaurantService.update(updateRestaurant)
+  async updateRestaurant(@Args('updateRestaurantArgs') updateRestaurantDto: UpdateRestaurantDto) {
+    return this.restaurantService.update(updateRestaurantDto)
   }
 }

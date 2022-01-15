@@ -12,7 +12,13 @@ type Restaurant {
 type User {
   email: String!
   password: String!
-  role: String!
+  role: UserRole!
+}
+
+enum UserRole {
+  customer
+  delivery
+  owner
 }
 
 type Query {

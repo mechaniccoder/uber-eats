@@ -1,8 +1,17 @@
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 
-type UserRole = 'customer' | 'delivery' | 'owner'
+// type UserRole = 'customer' | 'delivery' | 'owner'
+enum UserRole {
+  customer = 'customer',
+  delivery = 'delivery',
+  owner = 'owner',
+}
+
+registerEnumType(UserRole, {
+  name: 'UserRole',
+})
 
 export interface UserModel extends Model<User & Document> {}
 
@@ -25,7 +34,7 @@ export class User {
   })
   password: string
 
-  @Field()
+  @Field((type) => UserRole)
   @Prop({
     type: String,
     enum: ['customer', 'delivery', 'owner'],
