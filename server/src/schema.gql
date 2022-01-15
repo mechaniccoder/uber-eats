@@ -21,6 +21,11 @@ enum UserRole {
   owner
 }
 
+type CreateUserRes {
+  ok: Boolean!
+  error: String
+}
+
 type Query {
   restaurants: [Restaurant!]!
   users: [User!]!
@@ -29,6 +34,7 @@ type Query {
 type Mutation {
   createRestaurant(createRestaurantArgs: CreateRestaurantDto!): Restaurant!
   updateRestaurant(updateRestaurantArgs: UpdateRestaurantDto!): Restaurant!
+  createUser(createUserArgs: CreateUserDto!): CreateUserRes!
 }
 
 input CreateRestaurantDto {
@@ -44,4 +50,10 @@ input UpdateRestaurantDto {
   address: String
   ownerName: String
   _id: String!
+}
+
+input CreateUserDto {
+  email: String!
+  password: String!
+  role: UserRole!
 }
