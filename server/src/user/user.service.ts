@@ -11,20 +11,14 @@ export class UserService {
     return this.userModel.find({})
   }
 
-  async create(createUserDto: CreateUserDto) {
-    try {
-      const exists = await this.userModel.findOne({ email: createUserDto.email })
-      if (exists) {
-        // return error
-      }
-
-      const newUser = new this.userModel(createUserDto)
-      await newUser.save()
-      return true
-    } catch (err) {
-      console.log(err)
-      // return error
-      return false
+  async create(createUserDto: CreateUserDto): Promise<[string, User?]> {
+    const exists = await this.userModel.findOne({ email: createUserDto.email })
+    if (exists) {
+      return ['User already exists', exists]
     }
+
+    const newUser = new this.userModel(createUserDto)
+    await newUser.save()
+    return [null, newUser]
   }
 }

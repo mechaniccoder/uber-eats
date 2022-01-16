@@ -6,6 +6,8 @@ import { MongooseModule } from '@nestjs/mongoose'
 import * as Joi from 'joi'
 import { RestaurantModule } from './restaurant'
 import { UserModule } from './user/user.module'
+import { APP_FILTER } from '@nestjs/core'
+import { HttpExceptionFilter } from './shared/filter/http-exception.filter'
 
 @Module({
   imports: [
@@ -34,6 +36,11 @@ import { UserModule } from './user/user.module'
     UserModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

@@ -31,3 +31,9 @@ service, resolver에서 db와의 상호작용은 비동기로 처리되기 때�
 실험으로 primitive한 값을 promise로 감싸서 resolver, service에서 각각 return을 해줬고, 그 이전에 db document를 업데이트하는 로직을 작성했다. nestjs의 container는 db 업데이트 비동기 작업을 기다리지 않고 primitive한 promise가 이행되는대로 response값을 반환했다. 따라서 db도 업데이트 되지않았다. (이는 아마도 mogoose의 내부적인 buffering, 큐와 연관이 있는 것 같다. 관련 링크는 아래에 첨부하겠다.)
 
 https://mongoosejs.com/docs/connections.html#buffering
+
+### NestJS GraphQL에서의 exception filter
+
+graphql에서도 nestjs의 exception filter와 호환이 된다. 다만, 몇가지 다르게 설정해야할 부분들이 있는데 `GqlExceptionFilter`를 상속해야하며, host에 접근하기 위해 `GqlArgumentHost`라는 팩토리 함수를 사용한다.
+
+그리고 Restful에서는 express의 response 객체를 활용해 클라이언트로 데이터를 보냈다면, graphql에서는 response 객체를 사용할 수 없다. mutation에서 결과에 대한 타입과 정확히 호환되게 맞춰줘야 한다.

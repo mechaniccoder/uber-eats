@@ -1,4 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Response } from 'src/shared/factory/response.factory'
 import { CreateUserDto, CreateUserRes } from './dto/create-user.dto'
 import { User } from './user.schema'
 import { UserService } from './user.service'
@@ -13,7 +14,12 @@ export class UserResolver {
   }
 
   @Mutation((returns) => CreateUserRes)
-  createUser(@Args('createUserArgs') createUserDto: CreateUserDto) {
-    return
+  async createUser(@Args('createUserArgs') createUserDto: CreateUserDto) {
+    const [error, data] = await this.userService.create(createUserDto)
+    if (error) {
+      return Response.create<User>(false, error, data)
+    }
+
+    return Response.create<User>(true, null, data)
   }
 }
