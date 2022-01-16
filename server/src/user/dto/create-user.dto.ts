@@ -7,6 +7,6 @@ export class CreateUserDto extends PickType(User, ['email', 'password', 'role'],
 
 @ObjectType()
 export class CreateUserRes extends ResponseDto {
-  @Field((type) => User)
-  data: User
+  @Field((type) => User, { nullable: true })
+  data?: User
 }

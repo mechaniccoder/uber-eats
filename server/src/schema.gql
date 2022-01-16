@@ -24,7 +24,7 @@ enum UserRole {
 type CreateUserRes {
   ok: Boolean!
   error: String
-  data: User!
+  data: User
 }
 
 type Query {

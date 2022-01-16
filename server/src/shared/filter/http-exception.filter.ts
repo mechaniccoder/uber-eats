@@ -1,5 +1,6 @@
 import { Catch, ArgumentsHost, HttpException, Logger } from '@nestjs/common'
 import { GqlExceptionFilter } from '@nestjs/graphql'
+import { Response } from '../factory/response.factory'
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements GqlExceptionFilter {
@@ -7,11 +8,6 @@ export class HttpExceptionFilter implements GqlExceptionFilter {
 
   catch(exception: HttpException, host: ArgumentsHost) {
     this.logger.error(exception.getResponse())
-
-    return {
-      ok: false,
-      error: exception.message,
-      statusCode: exception.getStatus(),
-    }
+    return Response.create(false, exception.message)
   }
 }

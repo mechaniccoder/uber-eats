@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Response } from 'src/shared/factory/response.factory'
 import { CreateUserDto, CreateUserRes } from './dto/create-user.dto'
@@ -6,6 +7,8 @@ import { UserService } from './user.service'
 
 @Resolver((of) => User)
 export class UserResolver {
+  logger = new Logger()
+
   constructor(private userService: UserService) {}
 
   @Query((returns) => [User])
@@ -15,11 +18,7 @@ export class UserResolver {
 
   @Mutation((returns) => CreateUserRes)
   async createUser(@Args('createUserArgs') createUserDto: CreateUserDto) {
-    const [error, data] = await this.userService.create(createUserDto)
-    if (error) {
-      return Response.create<User>(false, error, data)
-    }
-
-    return Response.create<User>(true, null, data)
+    const newUser = await this.userService.create(createUserDto)
+    return Response.create<User>(true, null, newUser)
   }
 }
