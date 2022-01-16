@@ -37,3 +37,22 @@ https://mongoosejs.com/docs/connections.html#buffering
 graphql에서도 nestjs의 exception filter와 호환이 된다. 다만, 몇가지 다르게 설정해야할 부분들이 있는데 `GqlExceptionFilter`를 상속해야하며, host에 접근하기 위해 `GqlArgumentHost`라는 팩토리 함수를 사용한다.
 
 그리고 Restful에서는 express의 response 객체를 활용해 클라이언트로 데이터를 보냈다면, graphql에서는 response 객체를 사용할 수 없다. mutation에서 결과에 대한 타입과 정확히 호환되게 맞춰줘야 한다.
+
+### NestJS GraphQL에서 error handling
+
+Restful한 nestJS에서는 service레이어에서 throwing한 error를 잘 잡아내지만 graphql에서는 이를 잡아내지 못하는 이슈가 있었다. 뿐만 아니라, service 레이어에서 발생하는 error를 exception filter로 등록하더라도
+이를 잡아내지 못했다.
+
+따라서 스키마가 이미 정해져있는 graphql만의 error handling방법이 필요했고 이를 고안해냈다.
+
+service 레이어에서는 error, data를 배열 객체로 반환하고, 이를 받은 resolver는 code first 방법으로 작성한 graphql 스키마에 맞는 response 객체를 생성해내고 이를 클라이언트로 전송해주는 방식이다.
+
+아래 방식처럼 에러 핸들링 레이어를 구성했다.
+
+```typescript
+const [error, data] = await this.userService.create(...args)
+if (error) {
+  return Response.create(...args, error)
+}
+return Response.create(...args)
+```
