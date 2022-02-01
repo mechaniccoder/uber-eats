@@ -4,6 +4,7 @@ import { Response } from 'src/shared/factory/response.factory'
 import { CreateUserDto, CreateUserRes } from './dto/create-user.dto'
 import { User } from './user.schema'
 import { UserService } from './user.service'
+import { LoginDto, LoginRes } from './dto/login.dto'
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -20,5 +21,14 @@ export class UserResolver {
   async createUser(@Args('createUserArgs') createUserDto: CreateUserDto) {
     const newUser = await this.userService.create(createUserDto)
     return Response.create<User>(true, null, newUser)
+  }
+
+  @Mutation((returns) => LoginRes)
+  async login(@Args('loginArgs') loginDto: LoginDto): Promise<LoginRes> {
+    return {
+      ok: true,
+      error: null,
+      data: true,
+    }
   }
 }

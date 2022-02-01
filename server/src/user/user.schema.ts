@@ -2,6 +2,7 @@ import { Field, ObjectType, registerEnumType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Model } from 'mongoose'
 import * as bcrypt from 'bcrypt'
+import { IsEnum } from 'class-validator'
 
 enum UserRole {
   customer = 'customer',
@@ -41,6 +42,7 @@ export class User {
     enum: ['customer', 'delivery', 'owner'],
     required: true,
   })
+  @IsEnum(UserRole)
   role: UserRole
 }
 
@@ -49,6 +51,7 @@ export const UserSchema = SchemaFactory.createForClass(User)
 UserSchema.pre('save', async function () {
   const user = this as User & Document
   if (!user.isModified('password')) return
+  console.log('from pre save')
 
   user.password = await bcrypt.hash(user.password, 10)
 })
