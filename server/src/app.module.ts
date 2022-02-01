@@ -36,7 +36,7 @@ import { JwtModule } from './jwt/jwt.module'
     }),
     RestaurantModule,
     UserModule,
-    JwtModule,
+    JwtModule.forRoot({ privateKey: process.env.JWT_PRIVATE_KEY }),
   ],
   controllers: [],
   providers: [
