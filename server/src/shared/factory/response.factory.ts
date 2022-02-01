@@ -4,6 +4,7 @@ export class Response<T> {
   }
 
   error?: string
+
   constructor(private ok: boolean, error?: string, private data?: T) {
     if (error) {
       this.error = error
