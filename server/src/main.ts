@@ -11,9 +11,9 @@ async function bootstrap() {
   const logger = new Logger(bootstrap.name)
   logger.debug('Server running on 3000 port')
 
-  // if (module.hot) {
-  //   module.hot.accept()
-  //   module.hot.dispose(() => app.close())
-  // }
+  if (module.hot) {
+    module.hot.accept()
+    module.hot.dispose(() => app.close())
+  }
 }
 bootstrap()

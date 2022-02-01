@@ -1,7 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { CreateUserDto } from './dto/create-user.dto'
 import { User, UserModel } from './user.schema'
+import { LoginDto } from './dto/login.dto'
 
 @Injectable()
 export class UserService {
@@ -20,5 +27,17 @@ export class UserService {
     const newUser = new this.userModel(createUserDto)
     await newUser.save()
     return newUser
+  }
+
+  async login({ email, password }: LoginDto): Promise<string> {
+    const user = await this.userModel.findOne({ email })
+    if (!user) {
+      throw new NotFoundException('User not found')
+    }
+
+    const passwordCorrect = await this.userModel.comparePassword(password, user.password)
+    if (!passwordCorrect) throw new BadRequestException('Password not correct')
+
+    return 'token'
   }
 }

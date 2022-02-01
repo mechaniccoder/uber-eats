@@ -25,10 +25,7 @@ export class UserResolver {
 
   @Mutation((returns) => LoginRes)
   async login(@Args('loginArgs') loginDto: LoginDto): Promise<LoginRes> {
-    return {
-      ok: true,
-      error: null,
-      data: true,
-    }
+    const token = await this.userService.login(loginDto)
+    return Response.create<string>(true, null, token)
   }
 }

@@ -3,6 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Model } from 'mongoose'
 import * as bcrypt from 'bcrypt'
 import { IsEnum } from 'class-validator'
+import { BadGatewayException } from '@nestjs/common'
 
 enum UserRole {
   customer = 'customer',
@@ -14,8 +15,11 @@ registerEnumType(UserRole, {
   name: 'UserRole',
 })
 
-export interface UserModel extends Model<UserDocument> {}
 interface UserDocument extends User, Document<User> {}
+
+export interface UserModel extends Model<UserDocument> {
+  comparePassword(aPassword: string, hashedPassword): Promise<boolean>
+}
 
 @ObjectType()
 @Schema({
@@ -51,7 +55,14 @@ export const UserSchema = SchemaFactory.createForClass(User)
 UserSchema.pre('save', async function () {
   const user = this as User & Document
   if (!user.isModified('password')) return
-  console.log('from pre save')
 
   user.password = await bcrypt.hash(user.password, 10)
 })
+
+UserSchema.statics.comparePassword = async function (aPassword: string, hashedPassword: string) {
+  try {
+    return await bcrypt.compare(aPassword, hashedPassword)
+  } catch (err) {
+    throw new BadGatewayException('Error occurr while comparing password')
+  }
+}

@@ -3,11 +3,5 @@ export class Response<T> {
     return new Response<T>(ok, error, data)
   }
 
-  error?: string
-
-  constructor(private ok: boolean, error?: string, private data?: T) {
-    if (error) {
-      this.error = error
-    }
-  }
+  constructor(public ok: boolean, public error?: string, public data?: T) {}
 }
