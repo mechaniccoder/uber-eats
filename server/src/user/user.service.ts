@@ -5,14 +5,19 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
+import * as jwt from 'jsonwebtoken'
 import { InjectModel } from '@nestjs/mongoose'
 import { CreateUserDto } from './dto/create-user.dto'
 import { User, UserModel } from './user.schema'
 import { LoginDto } from './dto/login.dto'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: UserModel) {}
+  constructor(
+    @InjectModel(User.name) private userModel: UserModel,
+    private readonly configService: ConfigService,
+  ) {}
 
   async findAll(): Promise<User[]> {
     return this.userModel.find({})
@@ -38,6 +43,7 @@ export class UserService {
     const passwordCorrect = await this.userModel.comparePassword(password, user.password)
     if (!passwordCorrect) throw new BadRequestException('Password not correct')
 
-    return 'token'
+    const token = jwt.sign({ id: user._id }, this.configService.get('JWT_PRIVATE_KEY'))
+    return token
   }
 }

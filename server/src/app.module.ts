@@ -8,6 +8,7 @@ import { RestaurantModule } from './restaurant'
 import { UserModule } from './user/user.module'
 import { APP_FILTER } from '@nestjs/core'
 import { HttpExceptionFilter } from './shared/filter/http-exception.filter'
+import { JwtModule } from './jwt/jwt.module'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { HttpExceptionFilter } from './shared/filter/http-exception.filter'
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test'),
         DB_URL: Joi.string().required(),
         DB_NAME: Joi.string().required(),
+        JWT_PRIVATE_KEY: Joi.string().required(),
       }),
     }),
     MongooseModule.forRoot(process.env.DB_URL, {
@@ -34,6 +36,7 @@ import { HttpExceptionFilter } from './shared/filter/http-exception.filter'
     }),
     RestaurantModule,
     UserModule,
+    JwtModule,
   ],
   controllers: [],
   providers: [
