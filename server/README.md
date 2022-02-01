@@ -56,3 +56,8 @@ if (error) {
 }
 return Response.create(...args)
 ```
+
+### dynamic module
+
+jwt를 dynamic module로 만들어보았다. stataic module과는 다르게 dynamic 모듈의 경우는 외부에서 options를 동적으로 넣어준다.
+원하는 설정을 parameter화 하면 된다.
