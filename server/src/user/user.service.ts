@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   BadRequestException,
   HttpException,
   HttpStatus,
@@ -47,5 +48,13 @@ export class UserService {
 
     const token = this.jwtService.sign({ id: user._id })
     return token
+  }
+
+  async find(query: { [field: string]: any }): Promise<User> {
+    try {
+      return await this.userModel.findOne(query, { password: 0, __v: 0 })
+    } catch (err) {
+      throw new BadGatewayException('Error occurred while find user')
+    }
   }
 }

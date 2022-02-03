@@ -1,10 +1,12 @@
-import { Logger } from '@nestjs/common'
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Logger, UseGuards } from '@nestjs/common'
+import { Args, Context, Mutation, ObjectType, OmitType, Query, Resolver } from '@nestjs/graphql'
 import { Response } from 'src/shared/factory/response.factory'
 import { CreateUserDto, CreateUserRes } from './dto/create-user.dto'
 import { User } from './user.schema'
 import { UserService } from './user.service'
 import { LoginDto, LoginRes } from './dto/login.dto'
+import { AuthGuard } from '../auth/auth.guard'
+import { AuthUser } from '../auth/auth-user.decorator'
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -27,5 +29,11 @@ export class UserResolver {
   async login(@Args('loginArgs') loginDto: LoginDto): Promise<LoginRes> {
     const token = await this.userService.login(loginDto)
     return Response.create<string>(true, null, token)
+  }
+
+  @Query((returns) => User)
+  @UseGuards(AuthGuard)
+  async me(@AuthUser() user: User) {
+    return user
   }
 }

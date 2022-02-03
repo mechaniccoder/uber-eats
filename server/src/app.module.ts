@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { MongooseModule } from '@nestjs/mongoose'
@@ -9,6 +9,8 @@ import { UserModule } from './user/user.module'
 import { APP_FILTER } from '@nestjs/core'
 import { HttpExceptionFilter } from './shared/filter/http-exception.filter'
 import { JwtModule } from './jwt/jwt.module'
+import { JwtMiddleware } from './jwt/jwt.middleware'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
@@ -33,10 +35,12 @@ import { JwtModule } from './jwt/jwt.module'
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      context: ({ req }) => ({ user: req['user'] }),
     }),
     RestaurantModule,
     UserModule,
     JwtModule.forRoot({ privateKey: process.env.JWT_PRIVATE_KEY }),
+    AuthModule,
   ],
   controllers: [],
   providers: [
@@ -46,4 +50,11 @@ import { JwtModule } from './jwt/jwt.module'
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL,
+    })
+  }
+}

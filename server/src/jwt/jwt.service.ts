@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 import { JwtModuleOptions } from './interface/jwt-module-options'
 import { CONFIG_OPTIONS } from './jwt.constant'
 import * as jwt from 'jsonwebtoken'
@@ -9,7 +9,15 @@ export class JwtService {
 
   sign(payload: any): string {
     return jwt.sign(payload, this.options.privateKey, {
-      expiresIn: '30m',
+      expiresIn: '1h',
     })
+  }
+
+  verify(token: string) {
+    try {
+      return jwt.verify(token, this.options.privateKey)
+    } catch (err) {
+      throw new BadRequestException('Error occurred while verifying jwt token')
+    }
   }
 }

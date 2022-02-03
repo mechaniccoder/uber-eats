@@ -36,6 +36,7 @@ type LoginRes {
 type Query {
   restaurants: [Restaurant!]!
   users: [User!]!
+  me: User!
 }
 
 type Mutation {
