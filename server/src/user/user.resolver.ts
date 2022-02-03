@@ -1,5 +1,14 @@
 import { Logger, UseGuards } from '@nestjs/common'
-import { Args, Context, Mutation, ObjectType, OmitType, Query, Resolver } from '@nestjs/graphql'
+import {
+  Args,
+  ArgsType,
+  Context,
+  Mutation,
+  ObjectType,
+  OmitType,
+  Query,
+  Resolver,
+} from '@nestjs/graphql'
 import { Response } from 'src/shared/factory/response.factory'
 import { CreateUserDto, CreateUserRes } from './dto/create-user.dto'
 import { User } from './user.schema'
@@ -7,6 +16,9 @@ import { UserService } from './user.service'
 import { LoginDto, LoginRes } from './dto/login.dto'
 import { AuthGuard } from '../auth/auth.guard'
 import { AuthUser } from '../auth/auth-user.decorator'
+import { MeRes } from './dto/me.dto'
+import { Profiler } from 'inspector'
+import { ProfileArgs, ProfileRes } from './dto/profile.dto'
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -31,9 +43,16 @@ export class UserResolver {
     return Response.create<string>(true, null, token)
   }
 
-  @Query((returns) => User)
   @UseGuards(AuthGuard)
-  async me(@AuthUser() user: User) {
+  @Query((returns) => MeRes)
+  async me(@AuthUser() user: Omit<User, 'password'>) {
     return user
+  }
+
+  @UseGuards(AuthGuard)
+  @Query((returns) => ProfileRes)
+  async profile(@Args() { id }: ProfileArgs) {
+    const user = await this.userService.find({ _id: id })
+    return Response.create(true, null, user)
   }
 }

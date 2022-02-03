@@ -21,6 +21,11 @@ enum UserRole {
   owner
 }
 
+type UserWithoutPassword {
+  email: String!
+  role: UserRole!
+}
+
 type CreateUserRes {
   ok: Boolean!
   error: String
@@ -33,10 +38,23 @@ type LoginRes {
   data: String
 }
 
+type MeRes {
+  ok: Boolean!
+  error: String
+  data: User
+}
+
+type ProfileRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
 type Query {
   restaurants: [Restaurant!]!
   users: [User!]!
-  me: User!
+  me: MeRes!
+  profile(id: String!): ProfileRes!
 }
 
 type Mutation {

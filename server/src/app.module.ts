@@ -50,10 +50,10 @@ import { AuthModule } from './auth/auth.module'
     },
   ],
 })
-export class AppModule implements NestModule {
+export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(JwtMiddleware).forRoutes({
-      path: '*',
+      path: '/graphql',
       method: RequestMethod.ALL,
     })
   }

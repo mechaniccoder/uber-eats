@@ -9,10 +9,11 @@ import {
 import * as jwt from 'jsonwebtoken'
 import { InjectModel } from '@nestjs/mongoose'
 import { CreateUserDto } from './dto/create-user.dto'
-import { User, UserModel } from './user.schema'
+import { User, UserDocument, UserModel } from './user.schema'
 import { LoginDto } from './dto/login.dto'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '../jwt/jwt.service'
+import { FilterQuery } from 'mongoose'
 
 @Injectable()
 export class UserService {
@@ -50,9 +51,9 @@ export class UserService {
     return token
   }
 
-  async find(query: { [field: string]: any }): Promise<User> {
+  async find(query: FilterQuery<UserDocument>): Promise<User> {
     try {
-      return await this.userModel.findOne(query, { password: 0, __v: 0 })
+      return this.userModel.findOne(query, { password: 0, __v: 0 })
     } catch (err) {
       throw new BadGatewayException('Error occurred while find user')
     }

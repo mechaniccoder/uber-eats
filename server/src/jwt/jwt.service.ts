@@ -14,10 +14,6 @@ export class JwtService {
   }
 
   verify(token: string) {
-    try {
-      return jwt.verify(token, this.options.privateKey)
-    } catch (err) {
-      throw new BadRequestException('Error occurred while verifying jwt token')
-    }
+    return jwt.verify(token, this.options.privateKey)
   }
 }

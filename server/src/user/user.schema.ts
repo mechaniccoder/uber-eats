@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql'
+import { Field, ObjectType, OmitType, registerEnumType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Model } from 'mongoose'
 import * as bcrypt from 'bcrypt'
@@ -15,7 +15,7 @@ registerEnumType(UserRole, {
   name: 'UserRole',
 })
 
-interface UserDocument extends User, Document<User> {}
+export interface UserDocument extends User, Document<User> {}
 
 export interface UserModel extends Model<UserDocument> {
   comparePassword(aPassword: string, hashedPassword): Promise<boolean>
@@ -51,6 +51,9 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+
+@ObjectType()
+export class UserWithoutPassword extends OmitType(User, ['password']) {}
 
 UserSchema.pre('save', async function () {
   const user = this as User & Document
