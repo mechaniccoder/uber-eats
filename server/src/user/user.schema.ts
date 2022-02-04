@@ -1,6 +1,6 @@
 import { Field, ObjectType, OmitType, registerEnumType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, Model } from 'mongoose'
+import { Document, Model, ObjectId } from 'mongoose'
 import * as bcrypt from 'bcrypt'
 import { IsEnum } from 'class-validator'
 import { BadGatewayException } from '@nestjs/common'
@@ -15,7 +15,7 @@ registerEnumType(UserRole, {
   name: 'UserRole',
 })
 
-export interface UserDocument extends User, Document<User> {}
+export type UserDocument = User & Document
 
 export interface UserModel extends Model<UserDocument> {
   comparePassword(aPassword: string, hashedPassword): Promise<boolean>

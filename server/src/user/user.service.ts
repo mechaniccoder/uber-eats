@@ -9,11 +9,12 @@ import {
 import * as jwt from 'jsonwebtoken'
 import { InjectModel } from '@nestjs/mongoose'
 import { CreateUserDto } from './dto/create-user.dto'
-import { User, UserDocument, UserModel } from './user.schema'
+import { User, UserDocument, UserModel, UserWithoutPassword } from './user.schema'
 import { LoginDto } from './dto/login.dto'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '../jwt/jwt.service'
 import { FilterQuery } from 'mongoose'
+import { ExistException } from './user.exception'
 
 @Injectable()
 export class UserService {
@@ -30,10 +31,10 @@ export class UserService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     const exists = await this.userModel.findOne({ email: createUserDto.email })
     if (exists) {
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST)
+      throw new ExistException()
     }
 
-    const newUser = new this.userModel(createUserDto)
+    const newUser = new this.userModel(createUserDto, { password: 0 })
     await newUser.save()
     return newUser
   }
@@ -51,7 +52,10 @@ export class UserService {
     return token
   }
 
-  async find(query: FilterQuery<UserDocument>): Promise<User> {
-    return this.userModel.findOne(query, { password: 0, __v: 0 })
+  async find(query: FilterQuery<UserDocument>): Promise<UserWithoutPassword> {
+    const user = await this.userModel.findOne(query, { password: 0, __v: 0 })
+    if (!user) throw new NotFoundException('User not found')
+
+    return user
   }
 }
