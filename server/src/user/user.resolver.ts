@@ -11,7 +11,7 @@ import {
 } from '@nestjs/graphql'
 import { Response } from 'src/shared/factory/response.factory'
 import { CreateUserDto, CreateUserRes } from './dto/create-user.dto'
-import { User } from './user.schema'
+import { User, UserWithoutPassword } from './user.schema'
 import { UserService } from './user.service'
 import { LoginDto, LoginRes } from './dto/login.dto'
 import { AuthGuard } from '../auth/auth.guard'
@@ -45,7 +45,7 @@ export class UserResolver {
 
   @UseGuards(AuthGuard)
   @Query((returns) => MeRes)
-  async me(@AuthUser() user: Omit<User, 'password'>) {
+  async me(@AuthUser() user: UserWithoutPassword) {
     return user
   }
 
