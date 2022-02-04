@@ -7,7 +7,7 @@ import * as Joi from 'joi'
 import { RestaurantModule } from './restaurant'
 import { UserModule } from './user/user.module'
 import { APP_FILTER } from '@nestjs/core'
-import { HttpExceptionFilter } from './shared/filter/http-exception.filter'
+import { ExceptionFilter } from './shared/filter/exception.filter'
 import { JwtModule } from './jwt/jwt.module'
 import { JwtMiddleware } from './jwt/jwt.middleware'
 import { AuthModule } from './auth/auth.module'
@@ -46,7 +46,7 @@ import { AuthModule } from './auth/auth.module'
   providers: [
     {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
+      useClass: ExceptionFilter,
     },
   ],
 })

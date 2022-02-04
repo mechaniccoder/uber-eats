@@ -10,6 +10,7 @@ type Restaurant {
 }
 
 type User {
+  id: String!
   email: String!
   password: String!
   role: UserRole!
@@ -22,6 +23,7 @@ enum UserRole {
 }
 
 type UserWithoutPassword {
+  id: String!
   email: String!
   role: UserRole!
 }
@@ -41,7 +43,7 @@ type LoginRes {
 type MeRes {
   ok: Boolean!
   error: String
-  data: User
+  data: UserWithoutPassword
 }
 
 type ProfileRes {

@@ -52,10 +52,6 @@ export class UserService {
   }
 
   async find(query: FilterQuery<UserDocument>): Promise<User> {
-    try {
-      return this.userModel.findOne(query, { password: 0, __v: 0 })
-    } catch (err) {
-      throw new BadGatewayException('Error occurred while find user')
-    }
+    return this.userModel.findOne(query, { password: 0, __v: 0 })
   }
 }

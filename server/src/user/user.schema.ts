@@ -27,6 +27,9 @@ export interface UserModel extends Model<UserDocument> {
 })
 export class User {
   @Field((type) => String)
+  id: ObjectId
+
+  @Field((type) => String)
   @Prop({
     type: String,
     required: true,
