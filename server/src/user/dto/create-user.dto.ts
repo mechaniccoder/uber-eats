@@ -1,12 +1,12 @@
 import { Field, InputType, ObjectType, PickType } from '@nestjs/graphql'
 import { ResponseDto } from 'src/shared/dto/response.dto'
-import { User } from '../user.schema'
+import { User, UserWithoutPassword } from '../user.schema'
 
 @InputType()
 export class CreateUserDto extends PickType(User, ['email', 'password', 'role'], InputType) {}
 
 @ObjectType()
 export class CreateUserRes extends ResponseDto {
-  @Field((type) => User, { nullable: true })
-  data?: User
+  @Field((type) => UserWithoutPassword, { nullable: true })
+  data?: UserWithoutPassword
 }

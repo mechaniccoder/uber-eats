@@ -19,6 +19,7 @@ import { AuthUser } from '../auth/auth-user.decorator'
 import { MeRes } from './dto/me.dto'
 import { Profiler } from 'inspector'
 import { ProfileArgs, ProfileRes } from './dto/profile.dto'
+import { UpdateProfileDto, UpdateProfileRes } from './dto/update-profile.dto'
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -34,7 +35,7 @@ export class UserResolver {
   @Mutation((returns) => CreateUserRes)
   async createUser(@Args('createUserArgs') createUserDto: CreateUserDto) {
     const newUser = await this.userService.create(createUserDto)
-    return Response.create<User>(true, null, newUser)
+    return Response.create<UserWithoutPassword>(true, null, newUser)
   }
 
   @Mutation((returns) => LoginRes)
@@ -54,5 +55,15 @@ export class UserResolver {
   async profile(@Args() { id }: ProfileArgs) {
     const user = await this.userService.find({ _id: id })
     return Response.create(true, null, user)
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation((returns) => UpdateProfileRes)
+  async updateProfile(
+    @AuthUser() user: UserWithoutPassword,
+    @Args('updateProfileArgs') updateProfileDto: UpdateProfileDto,
+  ): Promise<UpdateProfileRes> {
+    const updatedUser = await this.userService.update(user, updateProfileDto)
+    return Response.create(true, null, updatedUser)
   }
 }

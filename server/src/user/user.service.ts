@@ -15,6 +15,7 @@ import { ConfigService } from '@nestjs/config'
 import { JwtService } from '../jwt/jwt.service'
 import { FilterQuery } from 'mongoose'
 import { ExistException } from './user.exception'
+import { UpdateProfileDto } from './dto/update-profile.dto'
 
 @Injectable()
 export class UserService {
@@ -28,19 +29,29 @@ export class UserService {
     return this.userModel.find({})
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserWithoutPassword> {
     const exists = await this.userModel.findOne({ email: createUserDto.email })
     if (exists) {
       throw new ExistException()
     }
 
-    const newUser = new this.userModel(createUserDto, { password: 0 })
-    await newUser.save()
-    return newUser
+    const newUser = await this.userModel.create(createUserDto)
+    const { password, ...user } = newUser['_doc']
+    return { id: user._id, ...user }
+  }
+
+  async update(
+    user: UserWithoutPassword,
+    updateProfileDto: UpdateProfileDto,
+  ): Promise<UserWithoutPassword> {
+    const updatedUser = await this.userModel.findByIdAndUpdate(user.id, updateProfileDto, {
+      new: true,
+    })
+    return updatedUser
   }
 
   async login({ email, password }: LoginDto): Promise<string> {
-    const user = await this.userModel.findOne({ email })
+    const user = await this.userModel.findOne({ email }, { password: 1 })
     if (!user) {
       throw new NotFoundException('User not found')
     }
@@ -48,12 +59,12 @@ export class UserService {
     const passwordCorrect = await this.userModel.comparePassword(password, user.password)
     if (!passwordCorrect) throw new BadRequestException('Password not correct')
 
-    const token = this.jwtService.sign({ id: user._id })
+    const token = this.jwtService.sign({ id: user.id })
     return token
   }
 
   async find(query: FilterQuery<UserDocument>): Promise<UserWithoutPassword> {
-    const user = await this.userModel.findOne(query, { password: 0, __v: 0 })
+    const user = await this.userModel.findOne(query, { __v: 0 })
     if (!user) throw new NotFoundException('User not found')
 
     return user

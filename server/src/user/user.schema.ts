@@ -40,6 +40,7 @@ export class User {
   @Prop({
     type: String,
     required: true,
+    select: false,
   })
   password: string
 
@@ -59,16 +60,23 @@ export const UserSchema = SchemaFactory.createForClass(User)
 export class UserWithoutPassword extends OmitType(User, ['password']) {}
 
 UserSchema.pre('save', async function () {
-  const user = this as User & Document
+  const user = this as UserDocument
   if (!user.isModified('password')) return
 
   user.password = await bcrypt.hash(user.password, 10)
+})
+
+UserSchema.pre('findOneAndUpdate', async function () {
+  const _update = this.getUpdate()
+  const password = _update['password']
+  const hashedPassword = await bcrypt.hash(password, 10)
+  this.setUpdate({ ..._update, password: hashedPassword })
 })
 
 UserSchema.statics.comparePassword = async function (aPassword: string, hashedPassword: string) {
   try {
     return await bcrypt.compare(aPassword, hashedPassword)
   } catch (err) {
-    throw new BadGatewayException('Error occurr while comparing password')
+    throw new BadGatewayException(err.message)
   }
 }

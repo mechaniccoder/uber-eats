@@ -31,7 +31,7 @@ type UserWithoutPassword {
 type CreateUserRes {
   ok: Boolean!
   error: String
-  data: User
+  data: UserWithoutPassword
 }
 
 type LoginRes {
@@ -52,6 +52,12 @@ type ProfileRes {
   data: UserWithoutPassword
 }
 
+type UpdateProfileRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
 type Query {
   restaurants: [Restaurant!]!
   users: [User!]!
@@ -64,6 +70,7 @@ type Mutation {
   updateRestaurant(updateRestaurantArgs: UpdateRestaurantDto!): Restaurant!
   createUser(createUserArgs: CreateUserDto!): CreateUserRes!
   login(loginArgs: LoginDto!): LoginRes!
+  updateProfile(updateProfileArgs: UpdateProfileDto!): UpdateProfileRes!
 }
 
 input CreateRestaurantDto {
@@ -90,4 +97,9 @@ input CreateUserDto {
 input LoginDto {
   email: String!
   password: String!
+}
+
+input UpdateProfileDto {
+  email: String
+  password: String
 }
