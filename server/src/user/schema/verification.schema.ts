@@ -24,3 +24,12 @@ export class Verification {
   isVerified: boolean
 }
 export const VerificationSchema = SchemaFactory.createForClass(Verification)
+
+VerificationSchema.pre('save', function () {
+  const verification = this as VerificationDocument
+  verification.code = generateVerificationCode()
+
+  function generateVerificationCode() {
+    return Math.random().toString(8).substring(2, 8)
+  }
+})
