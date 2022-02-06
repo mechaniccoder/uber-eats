@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType, PartialType, PickType } from '@nestjs/graphql'
-import { User, UserWithoutPassword } from '../user.schema'
+import { User, UserWithoutPassword } from '../schema/user.schema'
 import { ResponseDto } from '../../shared/dto/response.dto'
 
 @InputType()

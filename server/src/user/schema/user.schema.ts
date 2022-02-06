@@ -4,6 +4,7 @@ import { Document, Model, ObjectId } from 'mongoose'
 import * as bcrypt from 'bcrypt'
 import { IsEnum } from 'class-validator'
 import { BadGatewayException } from '@nestjs/common'
+import { Verification, VerificationDocument, VerificationSchema } from './verification.schema'
 
 enum UserRole {
   customer = 'customer',
@@ -52,6 +53,13 @@ export class User {
   })
   @IsEnum(UserRole)
   role: UserRole
+
+  @Field((type) => Verification)
+  @Prop({
+    type: VerificationSchema,
+    default: () => ({}),
+  })
+  verification: VerificationDocument
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

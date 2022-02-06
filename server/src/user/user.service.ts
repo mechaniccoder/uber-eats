@@ -9,7 +9,7 @@ import {
 import * as jwt from 'jsonwebtoken'
 import { InjectModel } from '@nestjs/mongoose'
 import { CreateUserDto } from './dto/create-user.dto'
-import { User, UserDocument, UserModel, UserWithoutPassword } from './user.schema'
+import { User, UserDocument, UserModel, UserWithoutPassword } from './schema/user.schema'
 import { LoginDto } from './dto/login.dto'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '../jwt/jwt.service'

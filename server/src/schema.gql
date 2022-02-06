@@ -9,11 +9,17 @@ type Restaurant {
   ownerName: String!
 }
 
+type Verification {
+  code: String!
+  isVerified: Boolean!
+}
+
 type User {
   id: String!
   email: String!
   password: String!
   role: UserRole!
+  verification: Verification!
 }
 
 enum UserRole {
@@ -26,6 +32,7 @@ type UserWithoutPassword {
   id: String!
   email: String!
   role: UserRole!
+  verification: Verification!
 }
 
 type CreateUserRes {
