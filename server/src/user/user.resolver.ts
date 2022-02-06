@@ -17,15 +17,19 @@ import { LoginDto, LoginRes } from './dto/login.dto'
 import { AuthGuard } from '../auth/auth.guard'
 import { AuthUser } from '../auth/auth-user.decorator'
 import { MeRes } from './dto/me.dto'
-import { Profiler } from 'inspector'
 import { ProfileArgs, ProfileRes } from './dto/profile.dto'
 import { UpdateProfileDto, UpdateProfileRes } from './dto/update-profile.dto'
+import { VerificationService } from './verification.service'
+import { VerifyCodeDto, VerifyCodRes } from './dto/verify-code.dto'
 
 @Resolver((of) => User)
 export class UserResolver {
   logger = new Logger()
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly verificationService: VerificationService,
+  ) {}
 
   @Query((returns) => [User])
   users(): Promise<User[]> {
@@ -65,5 +69,15 @@ export class UserResolver {
   ): Promise<UpdateProfileRes> {
     const updatedUser = await this.userService.update(user, updateProfileDto)
     return Response.create(true, null, updatedUser)
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation((returns) => VerifyCodRes)
+  async verifyCode(
+    @AuthUser() user: UserWithoutPassword,
+    @Args('verifyCodeArgs') verifyCodeDto: VerifyCodeDto,
+  ): Promise<VerifyCodRes> {
+    const result = await this.verificationService.verify(user, verifyCodeDto)
+    return Response.create(true, null, null)
   }
 }
