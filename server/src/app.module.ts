@@ -11,6 +11,7 @@ import { ExceptionFilter } from './shared/filter/exception.filter'
 import { JwtModule } from './jwt/jwt.module'
 import { JwtMiddleware } from './jwt/jwt.middleware'
 import { AuthModule } from './auth/auth.module'
+import { MailModule } from './mail/mail.module'
 
 @Module({
   imports: [
@@ -27,6 +28,9 @@ import { AuthModule } from './auth/auth.module'
         DB_URL: Joi.string().required(),
         DB_NAME: Joi.string().required(),
         JWT_PRIVATE_KEY: Joi.string().required(),
+        MAILGUN_API_KEY: Joi.string().required(),
+        MAILGUN_DOMAIN_NAME: Joi.string().required(),
+        MAILGUN_FROM: Joi.string().required(),
       }),
     }),
     MongooseModule.forRoot(process.env.DB_URL, {
@@ -41,6 +45,11 @@ import { AuthModule } from './auth/auth.module'
     UserModule,
     JwtModule.forRoot({ privateKey: process.env.JWT_PRIVATE_KEY }),
     AuthModule,
+    MailModule.forRoot({
+      apiKey: process.env.MAILGUN_API_KEY,
+      domain: process.env.MAILGUN_DOMAIN_NAME,
+      from: process.env.MAILGUN_FROM,
+    }),
   ],
   controllers: [],
   providers: [
