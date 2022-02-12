@@ -16,7 +16,7 @@ import { JwtService } from '../jwt/jwt.service'
 import { FilterQuery } from 'mongoose'
 import { ExistException } from './user.exception'
 import { UpdateProfileDto } from './dto/update-profile.dto'
-import { MailService } from '../mail/mail.service'
+import { MailService } from 'src/mail/mail.service'
 
 @Injectable()
 export class UserService {
