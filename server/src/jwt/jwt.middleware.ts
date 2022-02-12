@@ -1,10 +1,12 @@
-import { Injectable, NestMiddleware } from '@nestjs/common'
+import { Injectable, Logger, NestMiddleware } from '@nestjs/common'
 import { Request, Response, NextFunction } from 'express'
 import { JwtService } from './jwt.service'
 import { UserService } from '../user/user.service'
 
 @Injectable()
 export class JwtMiddleware implements NestMiddleware {
+  logger = new Logger()
+
   constructor(private readonly jwtService: JwtService, private readonly userService: UserService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
@@ -18,6 +20,7 @@ export class JwtMiddleware implements NestMiddleware {
         }
       }
     } catch (err) {
+      this.logger.error(err.message)
     } finally {
       next()
     }
