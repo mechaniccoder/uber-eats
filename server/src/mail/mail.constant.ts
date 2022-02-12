@@ -1,1 +1,2 @@
 export const MAIL_CONFIG_OPTIONS = 'MAIL_CONFIG_OPTIONS'
+export const MAILGUN = 'MAILGUN'
