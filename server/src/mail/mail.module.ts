@@ -9,6 +9,7 @@ import formData from 'form-data'
 export class MailModule {
   static forRoot(options?: MailModuleOptions): DynamicModule {
     return {
+      global: true,
       module: MailModule,
       providers: [
         {

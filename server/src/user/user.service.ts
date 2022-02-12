@@ -16,6 +16,7 @@ import { JwtService } from '../jwt/jwt.service'
 import { FilterQuery } from 'mongoose'
 import { ExistException } from './user.exception'
 import { UpdateProfileDto } from './dto/update-profile.dto'
+import { MailService } from '../mail/mail.service'
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,7 @@ export class UserService {
     @InjectModel(User.name) private userModel: UserModel,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -36,6 +38,22 @@ export class UserService {
     }
 
     const newUser = await this.userModel.create(createUserDto)
+
+    await this.mailService.sendMail(
+      `Verification code is ${newUser.verification.code}`,
+      'verification',
+      [
+        {
+          name: 'code',
+          value: newUser.verification.code,
+        },
+        {
+          name: 'username',
+          value: newUser.email,
+        },
+      ],
+    )
+
     const { password, ...user } = newUser['_doc']
     return { id: user._id, ...user }
   }
