@@ -6,7 +6,7 @@ import { IsEnum } from 'class-validator'
 import { BadGatewayException } from '@nestjs/common'
 import { Verification, VerificationDocument, VerificationSchema } from './verification.schema'
 
-enum UserRole {
+export enum UserRole {
   customer = 'customer',
   delivery = 'delivery',
   owner = 'owner',
