@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing'
 import { UserService } from './user.service'
 import { getModelToken } from '@nestjs/mongoose'
-import { User, UserModel, UserRole, UserWithoutPassword } from './schema/user.schema'
+import { User, UserModel, UserRole } from './schema/user.schema'
 import { Model } from 'mongoose'
 import { JwtService } from '../jwt/jwt.service'
 import { ConfigService } from '@nestjs/config'
@@ -76,7 +76,7 @@ describe('UserService', () => {
     expect(service).toBeDefined()
   })
 
-  describe('create user', () => {
+  describe('create', () => {
     const createUserArg = {
       email: testUser.email,
       password: testUser.password,
@@ -139,7 +139,21 @@ describe('UserService', () => {
     })
   })
 
-  it.todo('findAll')
+  describe('find', () => {
+    it('should fail if user not found', async () => {
+      model.findOne.mockResolvedValueOnce(null)
+
+      await expect(service.find({})).rejects.toThrow(NotFoundException)
+    })
+
+    it('should return a user', async () => {
+      model.findOne.mockResolvedValueOnce(testUser)
+
+      const aUser = await service.find({})
+
+      expect(aUser).toMatchObject(testUser)
+    })
+  })
+
   it.todo('update')
-  it.todo('find')
 })

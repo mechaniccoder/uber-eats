@@ -1,12 +1,4 @@
-import {
-  BadGatewayException,
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
-import * as jwt from 'jsonwebtoken'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { CreateUserDto } from './dto/create-user.dto'
 import { User, UserDocument, UserModel, UserWithoutPassword } from './schema/user.schema'
@@ -26,10 +18,6 @@ export class UserService {
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
   ) {}
-
-  async findAll(): Promise<User[]> {
-    return this.userModel.find({})
-  }
 
   async create(createUserDto: CreateUserDto): Promise<void> {
     const exists = await this.userModel.findOne({ email: createUserDto.email })
