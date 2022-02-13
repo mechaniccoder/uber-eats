@@ -31,7 +31,7 @@ export class UserService {
     return this.userModel.find({})
   }
 
-  async create(createUserDto: CreateUserDto): Promise<UserWithoutPassword> {
+  async create(createUserDto: CreateUserDto): Promise<void> {
     const exists = await this.userModel.findOne({ email: createUserDto.email })
     if (exists) {
       throw new ExistException()
@@ -53,9 +53,6 @@ export class UserService {
         },
       ],
     )
-
-    const { password, ...user } = newUser['_doc']
-    return { id: user._id, ...user }
   }
 
   async update(

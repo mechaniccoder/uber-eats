@@ -38,8 +38,8 @@ export class UserResolver {
 
   @Mutation((returns) => CreateUserRes)
   async createUser(@Args('createUserArgs') createUserDto: CreateUserDto) {
-    const newUser = await this.userService.create(createUserDto)
-    return Response.create<UserWithoutPassword>(true, null, newUser)
+    await this.userService.create(createUserDto)
+    return Response.create<UserWithoutPassword>(true, null, null)
   }
 
   @Mutation((returns) => LoginRes)
