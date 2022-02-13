@@ -1,14 +1,17 @@
 import { Test } from '@nestjs/testing'
 import { UserService } from './user.service'
 import { getModelToken } from '@nestjs/mongoose'
-import { User, UserRole, UserWithoutPassword } from './schema/user.schema'
+import { User, UserModel, UserRole, UserWithoutPassword } from './schema/user.schema'
 import { Model } from 'mongoose'
 import { JwtService } from '../jwt/jwt.service'
 import { ConfigService } from '@nestjs/config'
 import { MailService } from '../mail/mail.service'
 import { ExistException } from './user.exception'
+import { LoginDto } from './dto/login.dto'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 
-const newUser = {
+const testUser = {
+  id: '1',
   email: 'test@test.com',
   role: UserRole.customer,
   password: '123',
@@ -18,30 +21,30 @@ const newUser = {
   },
 }
 
-const mockedUserModel = {
-  new: jest.fn(),
-  constructor: jest.fn(),
+const mockedUserModel: Partial<UserModel> = {
   find: jest.fn(),
   findOne: jest.fn(),
   create: jest.fn(),
   findByIdAndUpdate: jest.fn(),
+  comparePassword: jest.fn(),
 }
 
-const mockedJwtService = {
+const mockedJwtService: Partial<JwtService> = {
   sign: jest.fn(),
   verify: jest.fn(),
 }
 
-const mockedMailService = {
+const mockedMailService: Partial<MailService> = {
   sendMail: jest.fn(),
 }
 
-type MockedModel<T = any> = Partial<Record<keyof Model<T>, jest.Mock>>
+type MockedModel<T = any> = Partial<Record<keyof (Model<T> & UserModel), jest.Mock>>
 
 describe('UserService', () => {
   let service: UserService
   let model: MockedModel<User>
   let mailService: MailService
+  let jwtService: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -63,9 +66,10 @@ describe('UserService', () => {
       ],
     }).compile()
 
-    service = moduleRef.get<UserService>(UserService)
     model = moduleRef.get<MockedModel<User>>(getModelToken(User.name))
+    service = moduleRef.get<UserService>(UserService)
     mailService = moduleRef.get<MailService>(MailService)
+    jwtService = moduleRef.get<JwtService>(JwtService)
   })
 
   it('should be defined', () => {
@@ -74,8 +78,8 @@ describe('UserService', () => {
 
   describe('create user', () => {
     const createUserArg = {
-      email: 'test@test.com',
-      password: '123',
+      email: testUser.email,
+      password: testUser.password,
       role: UserRole.customer,
     }
 
@@ -90,7 +94,7 @@ describe('UserService', () => {
 
     it('should create a new user', async () => {
       model.findOne.mockResolvedValueOnce(undefined)
-      model.create.mockResolvedValueOnce(newUser)
+      model.create.mockResolvedValueOnce(testUser)
 
       await service.create(createUserArg)
 
@@ -106,8 +110,36 @@ describe('UserService', () => {
     })
   })
 
+  describe('login', () => {
+    const loginArgs: LoginDto = {
+      email: testUser.email,
+      password: testUser.password,
+    }
+    it('should fail if user not exist', async () => {
+      model.findOne.mockResolvedValueOnce(null)
+
+      await expect(service.login(loginArgs)).rejects.toThrow(NotFoundException)
+    })
+
+    it('should fail if password not matched', async () => {
+      model.findOne.mockResolvedValueOnce(testUser)
+      model.comparePassword.mockResolvedValueOnce(false)
+
+      await expect(service.login(loginArgs)).rejects.toThrow(BadRequestException)
+    })
+
+    it('should return token on success', async () => {
+      model.findOne.mockResolvedValueOnce(testUser)
+      model.comparePassword.mockResolvedValueOnce(true)
+
+      await service.login(loginArgs)
+
+      expect(jwtService.sign).toHaveBeenCalledTimes(1)
+      expect(jwtService.sign).toHaveBeenCalledWith({ id: testUser.id })
+    })
+  })
+
   it.todo('findAll')
   it.todo('update')
-  it.todo('login')
   it.todo('find')
 })
