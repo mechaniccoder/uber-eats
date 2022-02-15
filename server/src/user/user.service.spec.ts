@@ -9,6 +9,8 @@ import { MailService } from '../mail/mail.service'
 import { ExistException } from './user.exception'
 import { LoginDto } from './dto/login.dto'
 import { BadRequestException, NotFoundException } from '@nestjs/common'
+import { UpdateProfileDto } from './dto/update-profile.dto'
+import { MockedModel } from '../shared/interface/test.interface'
 
 const testUser = {
   id: '1',
@@ -38,11 +40,11 @@ const mockedMailService: Partial<MailService> = {
   sendMail: jest.fn(),
 }
 
-type MockedModel<T = any> = Partial<Record<keyof (Model<T> & UserModel), jest.Mock>>
+export type MockedUserModel = MockedModel<UserModel>
 
 describe('UserService', () => {
   let service: UserService
-  let model: MockedModel<User>
+  let model: MockedUserModel
   let mailService: MailService
   let jwtService: JwtService
 
@@ -66,7 +68,7 @@ describe('UserService', () => {
       ],
     }).compile()
 
-    model = moduleRef.get<MockedModel<User>>(getModelToken(User.name))
+    model = moduleRef.get<MockedUserModel>(getModelToken(User.name))
     service = moduleRef.get<UserService>(UserService)
     mailService = moduleRef.get<MailService>(MailService)
     jwtService = moduleRef.get<JwtService>(JwtService)
@@ -155,5 +157,17 @@ describe('UserService', () => {
     })
   })
 
-  it.todo('update')
+  describe('update', () => {
+    const updateUserDto: UpdateProfileDto = {
+      email: 'update@update.com',
+    }
+    it('should be called with id and dto', async () => {
+      await service.update(testUser as any, updateUserDto)
+
+      expect(model.findByIdAndUpdate).toHaveBeenCalledTimes(1)
+      expect(model.findByIdAndUpdate).toHaveBeenCalledWith(testUser.id, updateUserDto, {
+        new: true,
+      })
+    })
+  })
 })
