@@ -91,7 +91,8 @@
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       ".schema.ts",
-      ".constant.ts"
+      ".constant.ts",
+      ".dto.ts"
     ]
   }
 }
