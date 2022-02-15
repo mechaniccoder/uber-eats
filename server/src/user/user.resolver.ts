@@ -31,11 +31,6 @@ export class UserResolver {
     private readonly verificationService: VerificationService,
   ) {}
 
-  @Query((returns) => [User])
-  users(): Promise<User[]> {
-    return this.userService.findAll()
-  }
-
   @Mutation((returns) => CreateUserRes)
   async createUser(@Args('createUserArgs') createUserDto: CreateUserDto) {
     await this.userService.create(createUserDto)

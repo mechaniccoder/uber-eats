@@ -13,7 +13,10 @@ export class MailService {
   ) {}
 
   public async sendMail(subject: string, template: string, variables?: TemplateVariables[]) {
-    const templateVars = this.parseTemplateVariables(variables)
+    let templateVars
+    if (variables) {
+      templateVars = this.parseTemplateVariables(variables)
+    }
 
     const messageData = {
       from: `Excited User <me@${this.mailOptions.domain}>`,
@@ -23,12 +26,9 @@ export class MailService {
       ...templateVars,
     }
     const res = await this.mailgun.messages.create(this.mailOptions.domain, messageData)
-    console.log(res)
   }
 
-  private parseTemplateVariables(variables?: TemplateVariables[]) {
-    if (typeof variables === 'undefined') return
-
+  private parseTemplateVariables(variables: TemplateVariables[]) {
     const result = {}
 
     variables.forEach(({ name, value }) => {
