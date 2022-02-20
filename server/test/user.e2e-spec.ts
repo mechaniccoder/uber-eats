@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { INestApplication } from '@nestjs/common'
+import { INestApplication, NotFoundException } from '@nestjs/common'
 import request from 'supertest'
 import { AppModule } from './../src/app.module'
 import { createConnection } from 'mongoose'
 import { ExistException } from 'src/user/user.exception'
+import { Response } from 'src/shared/factory/response.factory'
 
 const GRAPHQL_ENDPOINT = '/graphql'
 
@@ -37,10 +38,10 @@ describe('UserModule (e2e)', () => {
     await app.close()
   })
 
-  describe('createUser', () => {
-    const TEST_EMAIL = 'seunghwan3@gmail.com'
-    const TEST_PASSWORD = '123'
+  const TEST_EMAIL = 'seunghwan3@gmail.com'
+  const TEST_PASSWORD = '123'
 
+  describe('createUser', () => {
     it('should create a user', () => {
       return request(app.getHttpServer())
         .post(GRAPHQL_ENDPOINT)
@@ -96,6 +97,50 @@ describe('UserModule (e2e)', () => {
     })
   })
 
+  describe('login', () => {
+    it('should login with correct credentials', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .send({
+          query: `
+        mutation {
+          login(loginArgs: {email: "${TEST_EMAIL}", password: "${TEST_PASSWORD}"}) {
+            ok
+            data
+            error
+          }
+        }`,
+        })
+        .expect((res) => {
+          const { login } = extractRes(res)
+          expect(login.ok).toBe(true)
+          expect(login.data).toEqual(expect.any(String))
+          expect(login.error).toBe(null)
+        })
+    })
+    it('should not login with wrong correct credentials', () => {
+      request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .send({
+          query: `
+      mutation {
+        login(loginArgs: {email: "wrong@email.com", password: "${TEST_PASSWORD}"}) {
+          ok
+          data
+          error
+        }
+      }`,
+        })
+        .expect((res) => {
+          expect(extractRes(res).login).toEqual({
+            ok: false,
+            data: null,
+            error: NotFoundException.name,
+          })
+        })
+    })
+  })
+
   it.todo('createUser')
   it.todo('login')
   it.todo('me')
@@ -103,3 +148,11 @@ describe('UserModule (e2e)', () => {
   it.todo('updateProfile')
   it.todo('verifyCode')
 })
+
+function extractRes(res: request.Response): Record<string, Response> {
+  const {
+    body: { data },
+  } = res
+
+  return data
+}

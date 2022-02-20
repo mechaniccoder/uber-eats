@@ -1,4 +1,4 @@
-export class Response<T> {
+export class Response<T = any> {
   static create<T>(ok: boolean, error?: string, data?: T) {
     return new Response<T>(ok, error, data)
   }
