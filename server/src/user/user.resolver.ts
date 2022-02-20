@@ -1,14 +1,5 @@
 import { Logger, UseGuards } from '@nestjs/common'
-import {
-  Args,
-  ArgsType,
-  Context,
-  Mutation,
-  ObjectType,
-  OmitType,
-  Query,
-  Resolver,
-} from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Response } from 'src/shared/factory/response.factory'
 import { CreateUserDto, CreateUserRes } from './dto/create-user.dto'
 import { User, UserWithoutPassword } from './schema/user.schema'
