@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import request from 'supertest'
 import { AppModule } from './../src/app.module'
-import { createConnection, Document } from 'mongoose'
+import { createConnection } from 'mongoose'
 import { ExistException } from 'src/user/user.exception'
 import { Response } from 'src/shared/factory/response.factory'
-import { User, UserDocument, UserModel } from 'src/user/schema/user.schema'
+import { User, UserModel } from 'src/user/schema/user.schema'
 import { getModelToken } from '@nestjs/mongoose'
 
 const GRAPHQL_ENDPOINT = '/graphql'
@@ -217,6 +217,38 @@ describe('UserModule (e2e)', () => {
           expect(profile.ok).toBe(false)
           expect(profile.data).toBeNull()
           expect(profile.error).toBe(UnauthorizedException.name)
+        })
+    })
+
+    it('should fail if user id not valid', async () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', jwtToken)
+        .send({
+          query: `
+        query {
+          profile(id: "66") {
+            ok
+            error
+            data {
+              id
+              email
+              role
+              verification {
+                code
+                isVerified
+              }
+            }
+          }
+        }`,
+        })
+        .expect((res) => {
+          const { profile } = extractRes(res)
+          console.log(profile)
+
+          expect(profile.ok).toBe(false)
+          expect(profile.data).toBeNull()
+          expect(profile.error).toBe('CastError')
         })
     })
   })
