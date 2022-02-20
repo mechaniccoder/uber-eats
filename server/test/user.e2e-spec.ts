@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { INestApplication, NotFoundException } from '@nestjs/common'
+import { INestApplication, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import request from 'supertest'
 import { AppModule } from './../src/app.module'
-import { createConnection } from 'mongoose'
+import { createConnection, Document } from 'mongoose'
 import { ExistException } from 'src/user/user.exception'
 import { Response } from 'src/shared/factory/response.factory'
+import { User, UserDocument, UserModel } from 'src/user/schema/user.schema'
+import { getModelToken } from '@nestjs/mongoose'
 
 const GRAPHQL_ENDPOINT = '/graphql'
 
@@ -20,6 +22,8 @@ jest.mock('mailgun.js', () =>
 
 describe('UserModule (e2e)', () => {
   let app: INestApplication
+  let userModel: UserModel
+  let jwtToken: string
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -27,6 +31,8 @@ describe('UserModule (e2e)', () => {
     }).compile()
 
     app = moduleRef.createNestApplication()
+    userModel = moduleRef.get<UserModel>(getModelToken(User.name))
+
     await app.init()
   })
 
@@ -117,6 +123,8 @@ describe('UserModule (e2e)', () => {
           expect(login.ok).toBe(true)
           expect(login.data).toEqual(expect.any(String))
           expect(login.error).toBe(null)
+
+          jwtToken = login.data
         })
     })
     it('should not login with wrong correct credentials', () => {
@@ -138,6 +146,77 @@ describe('UserModule (e2e)', () => {
             data: null,
             error: NotFoundException.name,
           })
+        })
+    })
+  })
+
+  describe('profile', () => {
+    let userId: string
+
+    beforeAll(async () => {
+      const [user] = await userModel.find()
+      userId = user.id
+    })
+
+    it("should find a user's profile", async () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', jwtToken)
+        .send({
+          query: `
+        query {
+          profile(id: "${userId}") {
+            ok
+            error
+            data {
+              id
+              email
+              role
+              verification {
+                code
+                isVerified
+              }
+            }
+          }
+        }`,
+        })
+        .expect((res) => {
+          const { profile } = extractRes(res)
+
+          expect(profile.ok).toBe(true)
+          expect(profile.data.id).toBe(userId)
+          expect(profile.error).toBeNull()
+        })
+    })
+
+    it("should find a user's profile", async () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', 'testFailedJWT')
+        .send({
+          query: `
+        query {
+          profile(id: "${userId}") {
+            ok
+            error
+            data {
+              id
+              email
+              role
+              verification {
+                code
+                isVerified
+              }
+            }
+          }
+        }`,
+        })
+        .expect((res) => {
+          const { profile } = extractRes(res)
+
+          expect(profile.ok).toBe(false)
+          expect(profile.data).toBeNull()
+          expect(profile.error).toBe(UnauthorizedException.name)
         })
     })
   })
