@@ -244,7 +244,6 @@ describe('UserModule (e2e)', () => {
         })
         .expect((res) => {
           const { profile } = extractRes(res)
-          console.log(profile)
 
           expect(profile.ok).toBe(false)
           expect(profile.data).toBeNull()
