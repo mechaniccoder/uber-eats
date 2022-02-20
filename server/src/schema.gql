@@ -14,10 +14,9 @@ type Verification {
   isVerified: Boolean!
 }
 
-type User {
+type UserWithoutPassword {
   id: String!
   email: String!
-  password: String!
   role: UserRole!
   verification: Verification!
 }
@@ -26,13 +25,6 @@ enum UserRole {
   customer
   delivery
   owner
-}
-
-type UserWithoutPassword {
-  id: String!
-  email: String!
-  role: UserRole!
-  verification: Verification!
 }
 
 type CreateUserRes {
@@ -73,7 +65,6 @@ type VerifyCodRes {
 
 type Query {
   restaurants: [Restaurant!]!
-  users: [User!]!
   me: MeRes!
   profile(id: String!): ProfileRes!
 }

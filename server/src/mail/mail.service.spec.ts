@@ -66,5 +66,4 @@ describe('MailService', () => {
       expect(mailgun.messages.create).toHaveBeenCalledWith(TEST_DOMAIN, testMessageData)
     })
   })
-  describe('parseTemplateVariables', () => {})
 })
