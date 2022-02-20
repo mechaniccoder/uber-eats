@@ -65,7 +65,7 @@ describe('UserModule (e2e)', () => {
         })
         .expect(200)
         .expect((res) => {
-          expect(res.body.data.createUser.ok).toBe(true)
+          expect(extractRes(res).createUser.ok).toBe(true)
         })
     })
 
@@ -91,8 +91,9 @@ describe('UserModule (e2e)', () => {
           `,
         })
         .expect((res) => {
-          expect(res.body.data.createUser.ok).toBe(false)
-          expect(res.body.data.createUser.error).toBe(ExistException.name)
+          const { createUser } = extractRes(res)
+          expect(createUser.ok).toBe(false)
+          expect(createUser.error).toBe(ExistException.name)
         })
     })
   })
