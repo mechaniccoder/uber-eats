@@ -7,6 +7,10 @@ import { ExistException } from 'src/user/user.exception'
 import { Response } from 'src/shared/factory/response.factory'
 import { User, UserModel } from 'src/user/schema/user.schema'
 import { getModelToken } from '@nestjs/mongoose'
+import {
+  CodeAlreadyVerifiedException,
+  CodeNotMatchException,
+} from 'src/user/verification.exception'
 
 const GRAPHQL_ENDPOINT = '/graphql'
 
@@ -24,6 +28,7 @@ describe('UserModule (e2e)', () => {
   let app: INestApplication
   let userModel: UserModel
   let jwtToken: string
+  let verificationCode: string
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -71,7 +76,11 @@ describe('UserModule (e2e)', () => {
         })
         .expect(200)
         .expect((res) => {
-          expect(extractRes(res).createUser.ok).toBe(true)
+          const { createUser } = extractRes(res)
+
+          expect(createUser.ok).toBe(true)
+          expect(createUser.error).toBeNull()
+          expect(createUser.data).toBe(null)
         })
     })
 
@@ -127,8 +136,9 @@ describe('UserModule (e2e)', () => {
           jwtToken = login.data
         })
     })
+
     it('should not login with wrong correct credentials', () => {
-      request(app.getHttpServer())
+      return request(app.getHttpServer())
         .post(GRAPHQL_ENDPOINT)
         .send({
           query: `
@@ -186,10 +196,12 @@ describe('UserModule (e2e)', () => {
           expect(profile.ok).toBe(true)
           expect(profile.data.id).toBe(userId)
           expect(profile.error).toBeNull()
+
+          verificationCode = profile.data.verification.code
         })
     })
 
-    it("should find a user's profile", async () => {
+    it('should fail if token is invalid', async () => {
       return request(app.getHttpServer())
         .post(GRAPHQL_ENDPOINT)
         .set('authorization', 'testFailedJWT')
@@ -220,7 +232,7 @@ describe('UserModule (e2e)', () => {
         })
     })
 
-    it('should fail if user id not valid', async () => {
+    it('should fail if user id not valid', () => {
       return request(app.getHttpServer())
         .post(GRAPHQL_ENDPOINT)
         .set('authorization', jwtToken)
@@ -252,12 +264,193 @@ describe('UserModule (e2e)', () => {
     })
   })
 
-  it.todo('createUser')
-  it.todo('login')
-  it.todo('me')
-  it.todo('profile')
-  it.todo('updateProfile')
-  it.todo('verifyCode')
+  describe('me', () => {
+    it('should return me info', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', jwtToken)
+        .send({
+          query: `
+        query {
+          me {
+            ok
+            error
+            data {
+              id
+              email
+              role
+            }
+          }
+        } 
+        `,
+        })
+        .expect((res) => {
+          const { me } = extractRes(res)
+
+          expect(me.ok).toBe(true)
+          expect(me.data).not.toBeNull()
+          expect(me.data.email).toBe(TEST_EMAIL)
+          expect(me.error).toBeNull()
+        })
+    })
+
+    it('should fail if token is invalid', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', 'failedJWT')
+        .send({
+          query: `
+        query {
+          me {
+            ok
+            error
+            data {
+              id
+              email
+              role
+            }
+          }
+        } 
+        `,
+        })
+        .expect((res) => {
+          const { me } = extractRes(res)
+
+          expect(me.ok).toBe(false)
+          expect(me.data).toBeNull()
+          expect(me.error).toBe(UnauthorizedException.name)
+        })
+    })
+  })
+
+  describe('updateProfile', () => {
+    const updatedEmail = 'update@update.com'
+    it('should update user', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', jwtToken)
+        .send({
+          query: `
+          mutation {
+            updateProfile(updateProfileArgs: {email: "${updatedEmail}"}) {
+              ok
+              error
+              data {
+                email
+              }
+            }
+          }
+      `,
+        })
+        .expect((res) => {
+          const { updateProfile } = extractRes(res)
+
+          expect(updateProfile.ok).toBe(true)
+          expect(updateProfile.data.email).toBe(updatedEmail)
+          expect(updateProfile.error).toBeNull()
+        })
+    })
+
+    it('should fail if token is invalid', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', 'failToken')
+        .send({
+          query: `
+          mutation {
+            updateProfile(updateProfileArgs: {email: "${updatedEmail}"}) {
+              ok
+              error
+              data {
+                email
+              }
+            }
+          }
+      `,
+        })
+        .expect((res) => {
+          const { updateProfile } = extractRes(res)
+
+          expect(updateProfile.ok).toBe(false)
+          expect(updateProfile.data).toBeNull()
+          expect(updateProfile.error).toBe(UnauthorizedException.name)
+        })
+    })
+  })
+
+  describe('verifyCode', () => {
+    it('should fail if code not match', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', jwtToken)
+        .send({
+          query: `
+          mutation {
+            verifyCode(verifyCodeArgs: {code: "000000"}) {
+              ok
+              error
+              data
+            }
+          }
+      `,
+        })
+        .expect((res) => {
+          const { verifyCode } = extractRes(res)
+
+          expect(verifyCode.ok).toBe(false)
+          expect(verifyCode.error).toBe(CodeNotMatchException.name)
+          expect(verifyCode.data).toBeNull()
+        })
+    })
+
+    it('should verify code', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', jwtToken)
+        .send({
+          query: `
+          mutation {
+            verifyCode(verifyCodeArgs: {code: "${verificationCode}"}) {
+              ok
+              error
+              data
+            }
+          }
+      `,
+        })
+        .expect((res) => {
+          const { verifyCode } = extractRes(res)
+
+          expect(verifyCode.ok).toBe(true)
+          expect(verifyCode.error).toBeNull()
+          expect(verifyCode.data).toBeNull()
+        })
+    })
+
+    it('should fail if code not match', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .set('authorization', jwtToken)
+        .send({
+          query: `
+          mutation {
+            verifyCode(verifyCodeArgs: {code: "${verificationCode}"}) {
+              ok
+              error
+              data
+            }
+          }
+      `,
+        })
+        .expect((res) => {
+          const { verifyCode } = extractRes(res)
+
+          expect(verifyCode.ok).toBe(false)
+          expect(verifyCode.error).toBe(CodeAlreadyVerifiedException.name)
+          expect(verifyCode.data).toBeNull()
+        })
+    })
+  })
 })
 
 function extractRes(res: request.Response): Record<string, Response> {

@@ -37,7 +37,7 @@ export class UserResolver {
   @UseGuards(AuthGuard)
   @Query((returns) => MeRes)
   async me(@AuthUser() user: UserWithoutPassword) {
-    return user
+    return Response.create(true, null, user)
   }
 
   @UseGuards(AuthGuard)
