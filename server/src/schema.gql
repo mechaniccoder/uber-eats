@@ -2,14 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Restaurant {
-  id: String!
-  name: String!
-  img: String!
-  address: String!
-  category: String!
-}
-
 type Verification {
   code: String!
   isVerified: Boolean!
@@ -26,6 +18,15 @@ enum UserRole {
   customer
   delivery
   owner
+}
+
+type Restaurant {
+  id: String!
+  name: String!
+  img: String!
+  address: String!
+  category: String!
+  owner: String!
 }
 
 type CreateUserRes {
@@ -85,6 +86,7 @@ input CreateRestaurantDto {
   img: String!
   address: String!
   category: String!
+  owner: String!
 }
 
 input UpdateRestaurantDto {
@@ -93,6 +95,7 @@ input UpdateRestaurantDto {
   img: String
   address: String
   category: String
+  owner: String
   _id: String!
 }
 

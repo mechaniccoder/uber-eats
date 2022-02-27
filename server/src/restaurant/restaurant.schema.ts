@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, InputType, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Model, Schema as MSchema } from 'mongoose'
+import { User } from 'src/user/schema/user.schema'
 import { Category } from './category.schema'
 
 export interface RestaurantModel extends Model<Restaurant & Document> {}
 
+@InputType({ isAbstract: true })
 @ObjectType()
 @Schema({ timestamps: true })
 export class Restaurant {
@@ -40,6 +42,14 @@ export class Restaurant {
     required: true,
   })
   category: Category
+
+  @Field((type) => String)
+  @Prop({
+    type: MSchema.Types.ObjectId,
+    ref: User.name,
+    required: true,
+  })
+  owner: User
 }
 
 export const RestaurantSchema = SchemaFactory.createForClass(Restaurant)
