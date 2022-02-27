@@ -3,10 +3,11 @@
 # ------------------------------------------------------
 
 type Restaurant {
+  id: String!
   name: String!
-  isVegan: Boolean!
+  img: String!
   address: String!
-  ownerName: String!
+  category: String!
 }
 
 type Verification {
@@ -79,17 +80,19 @@ type Mutation {
 }
 
 input CreateRestaurantDto {
+  id: String!
   name: String!
-  isVegan: Boolean = false
+  img: String!
   address: String!
-  ownerName: String!
+  category: String!
 }
 
 input UpdateRestaurantDto {
+  id: String
   name: String
-  isVegan: Boolean = false
+  img: String
   address: String
-  ownerName: String
+  category: String
   _id: String!
 }
 
