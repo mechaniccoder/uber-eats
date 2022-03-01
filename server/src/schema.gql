@@ -29,6 +29,12 @@ type Restaurant {
   owner: String!
 }
 
+type CreateRestaurantRes {
+  ok: Boolean!
+  error: String
+  data: Restaurant
+}
+
 type CreateUserRes {
   ok: Boolean!
   error: String
@@ -66,14 +72,12 @@ type VerifyCodRes {
 }
 
 type Query {
-  restaurants: [Restaurant!]!
   me: MeRes!
   profile(id: String!): ProfileRes!
 }
 
 type Mutation {
-  createRestaurant(createRestaurantArgs: CreateRestaurantDto!): Restaurant!
-  updateRestaurant(updateRestaurantArgs: UpdateRestaurantDto!): Restaurant!
+  createRestaurant(createRestaurantArgs: CreateRestaurantDto!): CreateRestaurantRes!
   createUser(createUserArgs: CreateUserDto!): CreateUserRes!
   login(loginArgs: LoginDto!): LoginRes!
   updateProfile(updateProfileArgs: UpdateProfileDto!): UpdateProfileRes!
@@ -81,22 +85,10 @@ type Mutation {
 }
 
 input CreateRestaurantDto {
-  id: String!
   name: String!
   img: String!
   address: String!
   category: String!
-  owner: String!
-}
-
-input UpdateRestaurantDto {
-  id: String
-  name: String
-  img: String
-  address: String
-  category: String
-  owner: String
-  _id: String!
 }
 
 input CreateUserDto {
