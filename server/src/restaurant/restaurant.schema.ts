@@ -35,7 +35,7 @@ export class Restaurant {
   })
   address: string
 
-  @Field((type) => String)
+  @Field((type) => Category)
   @Prop({
     type: MSchema.Types.ObjectId,
     ref: Category.name,
@@ -43,7 +43,7 @@ export class Restaurant {
   })
   category: Category
 
-  @Field((type) => String)
+  @Field((type) => User)
   @Prop({
     type: MSchema.Types.ObjectId,
     ref: User.name,

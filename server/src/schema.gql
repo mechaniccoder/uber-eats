@@ -7,9 +7,10 @@ type Verification {
   isVerified: Boolean!
 }
 
-type UserWithoutPassword {
+type User {
   id: String!
   email: String!
+  password: String!
   role: UserRole!
   verification: Verification!
 }
@@ -20,13 +21,27 @@ enum UserRole {
   owner
 }
 
+type UserWithoutPassword {
+  id: String!
+  email: String!
+  role: UserRole!
+  verification: Verification!
+}
+
+type Category {
+  id: String!
+  name: String!
+  img: String!
+  slug: String!
+}
+
 type Restaurant {
   id: String!
   name: String!
   img: String!
   address: String!
-  category: String!
-  owner: String!
+  category: Category!
+  owner: User!
 }
 
 type CreateRestaurantRes {
@@ -88,7 +103,7 @@ input CreateRestaurantDto {
   name: String!
   img: String!
   address: String!
-  category: String!
+  categoryName: String!
 }
 
 input CreateUserDto {

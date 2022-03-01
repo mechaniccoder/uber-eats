@@ -15,15 +15,22 @@ export class Category {
   @Prop({
     type: String,
     required: true,
+    unique: true,
   })
   name: string
 
   @Field((type) => String)
   @Prop({
     type: String,
+  })
+  img?: string
+
+  @Field((type) => String)
+  @Prop({
+    type: String,
     required: true,
   })
-  img: string
+  slug: string
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category)
