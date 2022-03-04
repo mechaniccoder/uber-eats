@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Logger, UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Response } from 'src/shared/factory/response.factory'
@@ -12,6 +13,7 @@ import { ProfileArgs, ProfileRes } from './dto/profile.dto'
 import { UpdateProfileDto, UpdateProfileRes } from './dto/update-profile.dto'
 import { VerificationService } from './verification.service'
 import { VerifyCodeDto, VerifyCodRes } from './dto/verify-code.dto'
+import { Role } from 'src/auth/role.decorator'
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -34,20 +36,20 @@ export class UserResolver {
     return Response.create<string>(true, null, token)
   }
 
-  @UseGuards(AuthGuard)
+  @Role('any')
   @Query((returns) => MeRes)
   async me(@AuthUser() user: UserWithoutPassword) {
     return Response.create(true, null, user)
   }
 
-  @UseGuards(AuthGuard)
+  @Role('any')
   @Query((returns) => ProfileRes)
   async profile(@Args() { id }: ProfileArgs) {
     const user = await this.userService.find({ _id: id })
     return Response.create(true, null, user)
   }
 
-  @UseGuards(AuthGuard)
+  @Role('any')
   @Mutation((returns) => UpdateProfileRes)
   async updateProfile(
     @AuthUser() user: UserWithoutPassword,
@@ -57,13 +59,12 @@ export class UserResolver {
     return Response.create(true, null, updatedUser)
   }
 
-  @UseGuards(AuthGuard)
   @Mutation((returns) => VerifyCodRes)
   async verifyCode(
     @AuthUser() user: UserWithoutPassword,
     @Args('verifyCodeArgs') verifyCodeDto: VerifyCodeDto,
   ): Promise<VerifyCodRes> {
-    const result = await this.verificationService.verify(user, verifyCodeDto)
+    await this.verificationService.verify(user, verifyCodeDto)
     return Response.create(true, null, null)
   }
 }

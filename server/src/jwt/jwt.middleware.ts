@@ -20,7 +20,6 @@ export class JwtMiddleware implements NestMiddleware {
         }
       }
     } catch (err) {
-      this.logger.error(err.message)
     } finally {
       next()
     }

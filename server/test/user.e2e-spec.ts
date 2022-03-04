@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { INestApplication, NotFoundException, UnauthorizedException } from '@nestjs/common'
+import { INestApplication, NotFoundException, ForbiddenException } from '@nestjs/common'
 import request from 'supertest'
 import { AppModule } from './../src/app.module'
 import { createConnection } from 'mongoose'
@@ -228,7 +228,7 @@ describe('UserModule (e2e)', () => {
 
           expect(profile.ok).toBe(false)
           expect(profile.data).toBeNull()
-          expect(profile.error).toBe(UnauthorizedException.name)
+          expect(profile.error).toBe(ForbiddenException.name)
         })
     })
 
@@ -318,7 +318,7 @@ describe('UserModule (e2e)', () => {
 
           expect(me.ok).toBe(false)
           expect(me.data).toBeNull()
-          expect(me.error).toBe(UnauthorizedException.name)
+          expect(me.error).toBe(ForbiddenException.name)
         })
     })
   })
@@ -373,7 +373,7 @@ describe('UserModule (e2e)', () => {
 
           expect(updateProfile.ok).toBe(false)
           expect(updateProfile.data).toBeNull()
-          expect(updateProfile.error).toBe(UnauthorizedException.name)
+          expect(updateProfile.error).toBe(ForbiddenException.name)
         })
     })
   })
