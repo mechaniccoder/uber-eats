@@ -7,7 +7,6 @@ import { Category } from './category.schema'
 
 export interface RestaurantModel extends Model<Restaurant & Document> {}
 
-@InputType({ isAbstract: true })
 @ObjectType()
 @Schema({ timestamps: true })
 export class Restaurant {
@@ -41,7 +40,7 @@ export class Restaurant {
     ref: Category.name,
     required: true,
   })
-  category: Category
+  category: Category | string
 
   @Field((type) => User)
   @Prop({
@@ -49,7 +48,7 @@ export class Restaurant {
     ref: User.name,
     required: true,
   })
-  owner: User
+  owner: User | string
 }
 
 export const RestaurantSchema = SchemaFactory.createForClass(Restaurant)

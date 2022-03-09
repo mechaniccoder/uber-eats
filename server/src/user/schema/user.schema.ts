@@ -1,4 +1,5 @@
-import { Field, ObjectType, OmitType, registerEnumType } from '@nestjs/graphql'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Field, InputType, ObjectType, OmitType, registerEnumType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Model, ObjectId } from 'mongoose'
 import * as bcrypt from 'bcrypt'
@@ -28,7 +29,7 @@ export interface UserModel extends Model<UserDocument> {
 })
 export class User {
   @Field((type) => String)
-  id: ObjectId
+  id: string
 
   @Field((type) => String)
   @Prop({

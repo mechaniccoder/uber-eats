@@ -1,5 +1,5 @@
 import { Document } from 'mongoose'
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, InputType, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 
 export type VerificationDocument = Verification & Document
