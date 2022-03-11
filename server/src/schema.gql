@@ -50,6 +50,12 @@ type CreateRestaurantRes {
   data: Restaurant
 }
 
+type DeleteRestaurantRes {
+  ok: Boolean!
+  error: String
+  data: Boolean
+}
+
 type EditRestaurantRes {
   ok: Boolean!
   error: String
@@ -100,6 +106,7 @@ type Query {
 type Mutation {
   createRestaurant(createRestaurantArgs: CreateRestaurantDto!): CreateRestaurantRes!
   editRestaurant(editRestaurantArgs: EditRestaurantDto!): EditRestaurantRes!
+  deleteRestaurant(deleteRestaurantArgs: DeleteRestaurantDto!): DeleteRestaurantRes!
   createUser(createUserArgs: CreateUserDto!): CreateUserRes!
   login(loginArgs: LoginDto!): LoginRes!
   updateProfile(updateProfileArgs: UpdateProfileDto!): UpdateProfileRes!
@@ -118,6 +125,10 @@ input EditRestaurantDto {
   img: String
   address: String
   categoryName: String
+  id: String!
+}
+
+input DeleteRestaurantDto {
   id: String!
 }
 

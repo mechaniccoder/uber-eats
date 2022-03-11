@@ -5,6 +5,7 @@ import { Role } from 'src/auth/role.decorator'
 import { Response } from 'src/shared/factory/response.factory'
 import { User } from 'src/user/schema/user.schema'
 import { CreateRestaurantDto, CreateRestaurantRes } from './dto/create-restaurant.dto'
+import { DeleteRestaurantDto, DeleteRestaurantRes } from './dto/delete-restaurant.dto'
 import { EditRestaurantDto, EditRestaurantRes } from './dto/edit-restaurant.dto'
 import { RestaurantService } from './restaurant.service'
 
@@ -30,5 +31,15 @@ export class RestaurantResolver {
   ): Promise<EditRestaurantRes> {
     const editedRestaurant = await this.restaurantService.edit(authUser, editRestaurantDto)
     return Response.create(true, null, editedRestaurant)
+  }
+
+  @Role('owner')
+  @Mutation((returns) => DeleteRestaurantRes)
+  async deleteRestaurant(
+    @AuthUser() owner: User,
+    @Args('deleteRestaurantArgs') deleteRestaurantDto: DeleteRestaurantDto,
+  ) {
+    await this.restaurantService.delete(owner, deleteRestaurantDto)
+    return Response.create(true, null, null)
   }
 }

@@ -3,7 +3,9 @@ import { InjectModel } from '@nestjs/mongoose'
 import { User } from 'src/user/schema/user.schema'
 import { Category, CategoryModel } from './category.schema'
 import { CreateRestaurantDto } from './dto/create-restaurant.dto'
+import { DeleteRestaurantDto } from './dto/delete-restaurant.dto'
 import { EditRestaurantDto } from './dto/edit-restaurant.dto'
+import { RestaurantAuthorizedException, RestaurantNotFoundException } from './restaurant.exception'
 import { Restaurant, RestaurantModel } from './restaurant.schema'
 
 @Injectable()
@@ -47,8 +49,6 @@ export class RestaurantService {
       throw new HttpException('Reataurant not authorized', HttpStatus.FORBIDDEN)
     }
 
-    // find category
-
     let category: Category = null
 
     if (editRestaurantDto.categoryName) {
@@ -68,5 +68,17 @@ export class RestaurantService {
       .populate('category')
 
     return editedRestaurant
+  }
+
+  async delete(owner: User, deleteRestaurantDto: DeleteRestaurantDto) {
+    const { id } = deleteRestaurantDto
+
+    const aRestaurant = await this.restaurantModel.findById(id).populate('owner')
+
+    if (!aRestaurant) throw new RestaurantNotFoundException()
+
+    if (aRestaurant.owner.id !== owner.id) throw new RestaurantAuthorizedException()
+
+    await aRestaurant.delete()
   }
 }
