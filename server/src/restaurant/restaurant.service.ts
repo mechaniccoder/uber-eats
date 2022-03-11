@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { User } from 'src/user/schema/user.schema'
 import { Category, CategoryModel } from './category.schema'
 import { CreateRestaurantDto } from './dto/create-restaurant.dto'
+import { EditRestaurantDto } from './dto/edit-restaurant.dto'
 import { Restaurant, RestaurantModel } from './restaurant.schema'
 
 @Injectable()
@@ -33,5 +34,39 @@ export class RestaurantService {
     await newRestaurant.save()
 
     return newRestaurant
+  }
+
+  async edit(authUser: User, editRestaurantDto: EditRestaurantDto): Promise<Restaurant> {
+    const { id } = editRestaurantDto
+
+    const aRestaurant = await this.restaurantModel.findById(id).populate('owner')
+
+    if (!aRestaurant) throw new HttpException('Reataurant not existed', HttpStatus.BAD_REQUEST)
+
+    if (aRestaurant.owner.id !== authUser.id) {
+      throw new HttpException('Reataurant not authorized', HttpStatus.FORBIDDEN)
+    }
+
+    // find category
+
+    let category: Category = null
+
+    if (editRestaurantDto.categoryName) {
+      const categoryName = editRestaurantDto.categoryName.trim().toLowerCase()
+      const categorySlug = categoryName.replace(/\s+/g, '-')
+
+      const existingCategory = await this.categoryModel.findOne({ slug: categorySlug })
+      if (existingCategory) {
+        category = existingCategory
+      } else {
+        category = await this.categoryModel.create({ name: categoryName, slug: categorySlug })
+      }
+    }
+
+    const editedRestaurant = await this.restaurantModel
+      .findByIdAndUpdate(id, { ...editRestaurantDto, category: category.id }, { new: true })
+      .populate('category')
+
+    return editedRestaurant
   }
 }

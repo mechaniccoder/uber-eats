@@ -28,10 +28,7 @@ export class RestaurantResolver {
     @AuthUser() authUser: User,
     @Args('editRestaurantArgs') editRestaurantDto: EditRestaurantDto,
   ): Promise<EditRestaurantRes> {
-    // const editedRestaurant = await this.restaurantService.edit()
-    // return Response.create(true, null, editedRestaurant)
-    return {
-      ok: true,
-    }
+    const editedRestaurant = await this.restaurantService.edit(authUser, editRestaurantDto)
+    return Response.create(true, null, editedRestaurant)
   }
 }

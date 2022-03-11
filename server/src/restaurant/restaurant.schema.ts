@@ -40,7 +40,7 @@ export class Restaurant {
     ref: Category.name,
     required: true,
   })
-  category: Category | string
+  category: Category
 
   @Field((type) => User)
   @Prop({
@@ -48,7 +48,7 @@ export class Restaurant {
     ref: User.name,
     required: true,
   })
-  owner: User | string
+  owner: User
 }
 
 export const RestaurantSchema = SchemaFactory.createForClass(Restaurant)
