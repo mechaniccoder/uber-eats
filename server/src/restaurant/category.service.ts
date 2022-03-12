@@ -13,7 +13,7 @@ export class CategoryService {
   }
 
   async findBySlug(categoryDto: CategoryDto): Promise<Category> {
-    const aCategory = this.categoryModel.findOne(categoryDto)
+    const aCategory = await this.categoryModel.findOne(categoryDto)
 
     if (!aCategory) throw new CategoryNotFoundException()
 
