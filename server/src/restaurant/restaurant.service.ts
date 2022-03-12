@@ -71,14 +71,18 @@ export class RestaurantService {
   }
 
   async delete(owner: User, deleteRestaurantDto: DeleteRestaurantDto) {
-    const { id } = deleteRestaurantDto
+    const { id: restaurantId } = deleteRestaurantDto
 
-    const aRestaurant = await this.restaurantModel.findById(id).populate('owner')
+    const aRestaurant = await this.restaurantModel.findById(restaurantId).populate('owner')
 
     if (!aRestaurant) throw new RestaurantNotFoundException()
 
     if (aRestaurant.owner.id !== owner.id) throw new RestaurantAuthorizedException()
 
     await aRestaurant.delete()
+  }
+
+  async count(filter: Partial<Restaurant>): Promise<number> {
+    return await this.restaurantModel.count(filter)
   }
 }

@@ -33,6 +33,7 @@ type Category {
   name: String!
   img: String!
   slug: String!
+  restaurantsCount: Int!
 }
 
 type Restaurant {
@@ -60,6 +61,12 @@ type EditRestaurantRes {
   ok: Boolean!
   error: String
   data: Restaurant
+}
+
+type AllCategoriesRes {
+  ok: Boolean!
+  error: String
+  data: [Category!]
 }
 
 type CreateUserRes {
@@ -99,6 +106,7 @@ type VerifyCodRes {
 }
 
 type Query {
+  allCategories: AllCategoriesRes!
   me: MeRes!
   profile(id: String!): ProfileRes!
 }
