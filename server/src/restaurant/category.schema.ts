@@ -19,7 +19,7 @@ export class Category {
   })
   name: string
 
-  @Field((type) => String)
+  @Field((type) => String, { nullable: true })
   @Prop({
     type: String,
   })

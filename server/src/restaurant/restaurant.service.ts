@@ -5,6 +5,7 @@ import { Category, CategoryModel } from './category.schema'
 import { CreateRestaurantDto } from './dto/create-restaurant.dto'
 import { DeleteRestaurantDto } from './dto/delete-restaurant.dto'
 import { EditRestaurantDto } from './dto/edit-restaurant.dto'
+import { GetRestaurantDto } from './dto/get-restaurant.dto'
 import { RestaurantsDto } from './dto/restaurants.dto'
 import { RestaurantAuthorizedException, RestaurantNotFoundException } from './restaurant.exception'
 import { Restaurant, RestaurantModel } from './restaurant.schema'
@@ -93,5 +94,14 @@ export class RestaurantService {
       .populate(['category', 'owner'])
 
     return restaurants
+  }
+
+  async get(getRestaurantInput: GetRestaurantDto): Promise<Restaurant> {
+    const aRestaurant = await this.restaurantModel
+      .findById(getRestaurantInput.id)
+      .populate(['category'])
+      .select('-owner')
+
+    return aRestaurant
   }
 }
