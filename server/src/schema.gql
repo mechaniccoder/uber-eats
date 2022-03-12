@@ -69,6 +69,12 @@ type AllCategoriesRes {
   data: [Category!]
 }
 
+type CategoryRes {
+  ok: Boolean!
+  error: String
+  data: Category
+}
+
 type CreateUserRes {
   ok: Boolean!
   error: String
@@ -105,17 +111,26 @@ type VerifyCodRes {
   data: Boolean
 }
 
-type CategoryRes {
+type RestaurantsRes {
   ok: Boolean!
   error: String
-  data: Category
+  data: [Restaurant!]
 }
 
 type Query {
+  restaurants(restaurantsArgs: RestaurantsDto): RestaurantsRes!
   allCategories: AllCategoriesRes!
   category(categoryArgs: CategoryDto!): CategoryRes!
   me: MeRes!
   profile(id: String!): ProfileRes!
+}
+
+input RestaurantsDto {
+  name: String
+  img: String
+  address: String
+  category: String
+  owner: String
 }
 
 input CategoryDto {

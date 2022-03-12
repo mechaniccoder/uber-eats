@@ -7,6 +7,7 @@ import { User } from 'src/user/schema/user.schema'
 import { CreateRestaurantDto, CreateRestaurantRes } from './dto/create-restaurant.dto'
 import { DeleteRestaurantDto, DeleteRestaurantRes } from './dto/delete-restaurant.dto'
 import { EditRestaurantDto, EditRestaurantRes } from './dto/edit-restaurant.dto'
+import { RestaurantsDto, RestaurantsRes } from './dto/restaurants.dto'
 import { RestaurantService } from './restaurant.service'
 
 @Resolver()
@@ -41,5 +42,13 @@ export class RestaurantResolver {
   ) {
     await this.restaurantService.delete(owner, deleteRestaurantDto)
     return Response.create(true, null, null)
+  }
+
+  @Query((returns) => RestaurantsRes)
+  async restaurants(
+    @Args('restaurantsArgs', { nullable: true }) restaurantsDto?: RestaurantsDto,
+  ): Promise<RestaurantsRes> {
+    const restaurants = await this.restaurantService.find(restaurantsDto)
+    return Response.create(true, null, restaurants)
   }
 }

@@ -5,6 +5,7 @@ import { Category, CategoryModel } from './category.schema'
 import { CreateRestaurantDto } from './dto/create-restaurant.dto'
 import { DeleteRestaurantDto } from './dto/delete-restaurant.dto'
 import { EditRestaurantDto } from './dto/edit-restaurant.dto'
+import { RestaurantsDto } from './dto/restaurants.dto'
 import { RestaurantAuthorizedException, RestaurantNotFoundException } from './restaurant.exception'
 import { Restaurant, RestaurantModel } from './restaurant.schema'
 
@@ -84,5 +85,13 @@ export class RestaurantService {
 
   async count(filter: Partial<Restaurant>): Promise<number> {
     return await this.restaurantModel.count(filter)
+  }
+
+  async find(restaurantsDto: RestaurantsDto): Promise<Restaurant[]> {
+    const restaurants = await this.restaurantModel
+      .find(restaurantsDto)
+      .populate(['category', 'owner'])
+
+    return restaurants
   }
 }
