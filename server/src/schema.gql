@@ -105,10 +105,21 @@ type VerifyCodRes {
   data: Boolean
 }
 
+type CategoryRes {
+  ok: Boolean!
+  error: String
+  data: Category
+}
+
 type Query {
   allCategories: AllCategoriesRes!
+  category(categoryArgs: CategoryDto!): CategoryRes!
   me: MeRes!
   profile(id: String!): ProfileRes!
+}
+
+input CategoryDto {
+  slug: String!
 }
 
 type Mutation {

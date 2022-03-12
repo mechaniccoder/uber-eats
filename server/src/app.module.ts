@@ -3,6 +3,7 @@ import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { MongooseModule } from '@nestjs/mongoose'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import * as Joi from 'joi'
 import { RestaurantModule } from './restaurant'
 import { UserModule } from './user/user.module'
@@ -37,7 +38,8 @@ import { MailModule } from './mail/mail.module'
       dbName: process.env.DB_NAME,
       family: 4,
     }),
-    GraphQLModule.forRoot({
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ user: req['user'] }),
     }),
