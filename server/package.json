@@ -24,12 +24,13 @@
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.1.5",
     "@nestjs/core": "^8.0.0",
-    "@nestjs/graphql": "^9.1.2",
+    "@nestjs/graphql": "^9.0",
     "@nestjs/mongoose": "^9.0.2",
     "@nestjs/platform-express": "^8.0.0",
-    "apollo-server-express": "^3.5.0",
+    "apollo-server-core": "^3.6.4",
+    "apollo-server-express": "^3.6.4",
     "bcrypt": "^5.0.1",
-    "class-transformer": "^0.5.1",
+    "class-transformer": "^0.5",
     "class-validator": "^0.13.2",
     "form-data": "^4.0.0",
     "got": "^12.0.1",
@@ -40,7 +41,8 @@
     "mongoose": "^6.1.4",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "source-map-support": "^0.5.21"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
