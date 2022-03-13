@@ -7,6 +7,7 @@ import { DeleteRestaurantDto } from './dto/delete-restaurant.dto'
 import { EditRestaurantDto } from './dto/edit-restaurant.dto'
 import { GetRestaurantDto } from './dto/get-restaurant.dto'
 import { RestaurantsDto } from './dto/restaurants.dto'
+import { SearchRestaurantsInput } from './dto/search-restaurants.dto'
 import { RestaurantAuthorizedException, RestaurantNotFoundException } from './restaurant.exception'
 import { Restaurant, RestaurantModel } from './restaurant.schema'
 
@@ -102,6 +103,20 @@ export class RestaurantService {
       .populate(['category'])
       .select('-owner')
 
+    if (!aRestaurant) {
+      throw new RestaurantNotFoundException()
+    }
+
     return aRestaurant
+  }
+
+  async search(searchRestaurantsInput: SearchRestaurantsInput): Promise<Restaurant[]> {
+    const restaurants = await this.restaurantModel.find(
+      {
+        name: new RegExp(searchRestaurantsInput.query, 'gi'),
+      },
+      'name',
+    )
+    return restaurants
   }
 }

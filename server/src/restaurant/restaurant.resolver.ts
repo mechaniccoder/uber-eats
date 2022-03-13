@@ -9,6 +9,7 @@ import { DeleteRestaurantDto, DeleteRestaurantRes } from './dto/delete-restauran
 import { EditRestaurantDto, EditRestaurantRes } from './dto/edit-restaurant.dto'
 import { GetRestaurantDto, GetRestaurantRes } from './dto/get-restaurant.dto'
 import { RestaurantsDto, RestaurantsRes } from './dto/restaurants.dto'
+import { SearchRestaurantsInput, SearchRestaurantsRes } from './dto/search-restaurants.dto'
 import { Restaurant } from './restaurant.schema'
 import { RestaurantService } from './restaurant.service'
 
@@ -60,5 +61,13 @@ export class RestaurantResolver {
   ): Promise<GetRestaurantRes> {
     const aRestaurant = await this.restaurantService.get(getRestaurantInput)
     return Response.create(true, null, aRestaurant)
+  }
+
+  @Query((returns) => SearchRestaurantsRes)
+  async searchRestaurants(
+    @Args('searchRestaurantsInput') searchRestaurantsInput: SearchRestaurantsInput,
+  ): Promise<SearchRestaurantsRes> {
+    const restaurants = await this.restaurantService.search(searchRestaurantsInput)
+    return Response.create(true, null, restaurants)
   }
 }
