@@ -1,6 +1,6 @@
 import { Field, InputType, Int, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Document, Types } from 'mongoose'
 
 export type DishDocument = Document & Dish
 
@@ -36,6 +36,12 @@ export class Dish {
     maxlength: 100,
   })
   description: string
+
+  @Field((type) => String)
+  @Prop({
+    type: [String],
+  })
+  options: Types.Array<string>
 }
 
 export const DishSchema = SchemaFactory.createForClass(Dish)

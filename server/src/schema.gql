@@ -41,6 +41,7 @@ type Dish {
   price: Int!
   img: String
   description: String
+  options: String!
 }
 
 type Restaurant {
@@ -161,6 +162,7 @@ input DishInput {
   price: Int!
   img: String
   description: String
+  options: String!
 }
 
 input GetRestaurantDto {

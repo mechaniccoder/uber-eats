@@ -4,7 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Model, Schema as MSchema, Types } from 'mongoose'
 import { User } from 'src/user/schema/user.schema'
 import { Category } from './category.schema'
-import { Dish, DishDocument, DishSchema } from '../dish/dish.schema'
+import { Dish, DishSchema } from './dish/dish.schema'
 
 export interface RestaurantModel extends Model<Restaurant & Document> {}
 
