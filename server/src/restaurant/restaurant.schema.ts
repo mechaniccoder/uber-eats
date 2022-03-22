@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Field, InputType, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, Model, Schema as MSchema } from 'mongoose'
+import { Document, Model, Schema as MSchema, Types } from 'mongoose'
 import { User } from 'src/user/schema/user.schema'
 import { Category } from './category.schema'
 import { Dish, DishDocument, DishSchema } from '../dish/dish.schema'
@@ -55,7 +55,7 @@ export class Restaurant {
   @Prop({
     type: [DishSchema],
   })
-  dishes: DishDocument[]
+  dishes: Types.DocumentArray<Dish>
 }
 
 export const RestaurantSchema = SchemaFactory.createForClass(Restaurant)

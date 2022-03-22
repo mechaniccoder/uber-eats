@@ -1,9 +1,10 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
 
 export type DishDocument = Document & Dish
 
+@InputType('DishInput', { isAbstract: true })
 @ObjectType()
 @Schema({
   _id: false,

@@ -36,6 +36,13 @@ type Category {
   restaurantsCount: Int!
 }
 
+type Dish {
+  name: String!
+  price: Int!
+  img: String
+  description: String
+}
+
 type Restaurant {
   id: String!
   name: String!
@@ -43,6 +50,7 @@ type Restaurant {
   address: String!
   category: Category!
   owner: User!
+  dishes: Dish!
 }
 
 type CreateRestaurantRes {
@@ -143,8 +151,16 @@ input RestaurantsDto {
   name: String
   img: String
   address: String
+  dishes: DishInput
   category: String
   owner: String
+}
+
+input DishInput {
+  name: String!
+  price: Int!
+  img: String
+  description: String
 }
 
 input GetRestaurantDto {
