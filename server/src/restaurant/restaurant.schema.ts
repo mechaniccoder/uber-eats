@@ -4,6 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Model, Schema as MSchema } from 'mongoose'
 import { User } from 'src/user/schema/user.schema'
 import { Category } from './category.schema'
+import { Dish, DishDocument, DishSchema } from '../dish/dish.schema'
 
 export interface RestaurantModel extends Model<Restaurant & Document> {}
 
@@ -49,6 +50,12 @@ export class Restaurant {
     required: true,
   })
   owner: User
+
+  @Field((type) => Dish)
+  @Prop({
+    type: [DishSchema],
+  })
+  dishes: DishDocument[]
 }
 
 export const RestaurantSchema = SchemaFactory.createForClass(Restaurant)
