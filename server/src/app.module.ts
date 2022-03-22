@@ -13,6 +13,7 @@ import { JwtModule } from './jwt/jwt.module'
 import { JwtMiddleware } from './jwt/jwt.middleware'
 import { AuthModule } from './auth/auth.module'
 import { MailModule } from './mail/mail.module'
+import { DishModule } from './restaurant/dish/dish.module'
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { MailModule } from './mail/mail.module'
       context: ({ req }) => ({ user: req['user'] }),
     }),
     RestaurantModule,
+    DishModule,
     UserModule,
     JwtModule.forRoot({ privateKey: process.env.JWT_PRIVATE_KEY }),
     AuthModule,

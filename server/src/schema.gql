@@ -138,6 +138,13 @@ type VerifyCodRes {
   data: Boolean
 }
 
+type CreateDishRes {
+  ok: Boolean!
+  error: String
+  data: Dish
+  restaurantId: String!
+}
+
 type Query {
   restaurants(restaurantsArgs: RestaurantsDto): RestaurantsRes!
   getRestaurant(getRestaurantInput: GetRestaurantDto!): GetRestaurantRes!
@@ -181,6 +188,7 @@ type Mutation {
   createRestaurant(createRestaurantArgs: CreateRestaurantDto!): CreateRestaurantRes!
   editRestaurant(editRestaurantArgs: EditRestaurantDto!): EditRestaurantRes!
   deleteRestaurant(deleteRestaurantArgs: DeleteRestaurantDto!): DeleteRestaurantRes!
+  createDish: CreateDishRes!
   createUser(createUserArgs: CreateUserDto!): CreateUserRes!
   login(loginArgs: LoginDto!): LoginRes!
   updateProfile(updateProfileArgs: UpdateProfileDto!): UpdateProfileRes!

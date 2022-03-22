@@ -6,6 +6,7 @@ import { RestaurantService } from './restaurant.service'
 import { Category, CategorySchema } from './category.schema'
 import { CategoryResolver } from './category.resolver'
 import { CategoryService } from './category.service'
+import { DishModule } from './dish/dish.module'
 
 @Module({
   imports: [
@@ -13,5 +14,6 @@ import { CategoryService } from './category.service'
     MongooseModule.forFeature([{ name: Category.name, schema: CategorySchema }]),
   ],
   providers: [RestaurantResolver, RestaurantService, CategoryResolver, CategoryService],
+  exports: [RestaurantService],
 })
 export class RestaurantModule {}
