@@ -18,6 +18,6 @@ export class DishResolver {
     @Args('createDishInput') createDishInput: CreateDishInput,
   ) {
     const dish = await this.dishService.create(owner, createDishInput)
-    return Response.create(true, null, true)
+    return Response.create(true, null, dish)
   }
 }

@@ -48,7 +48,7 @@ export class RestaurantService {
 
     if (!aRestaurant) throw new HttpException('Reataurant not existed', HttpStatus.BAD_REQUEST)
 
-    if (aRestaurant.owner !== authUser._id) {
+    if (!aRestaurant.owner.equals(authUser._id)) {
       throw new HttpException('Reataurant not authorized', HttpStatus.FORBIDDEN)
     }
 
@@ -80,7 +80,7 @@ export class RestaurantService {
 
     if (!aRestaurant) throw new RestaurantNotFoundException()
 
-    if (aRestaurant.owner !== owner._id) throw new RestaurantAuthorizedException()
+    if (!aRestaurant.owner.equals(owner._id)) throw new RestaurantAuthorizedException()
 
     await aRestaurant.delete()
   }
@@ -101,7 +101,6 @@ export class RestaurantService {
     const aRestaurant = await this.restaurantModel
       .findById(getRestaurantInput.id)
       .populate(['category'])
-      .select('-owner')
 
     if (!aRestaurant) {
       throw new RestaurantNotFoundException()

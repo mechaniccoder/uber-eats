@@ -22,7 +22,7 @@ export class DishService {
       throw new RestaurantNotFoundException()
     }
 
-    if (owner._id !== aRestaurant.owner) {
+    if (!owner._id.equals(aRestaurant.owner)) {
       throw new RestaurantAuthorizedException()
     }
 

@@ -51,7 +51,7 @@ export class Restaurant {
   })
   owner: Types.ObjectId
 
-  @Field((type) => Dish)
+  @Field((type) => [Dish])
   @Prop({
     type: [DishSchema],
   })
