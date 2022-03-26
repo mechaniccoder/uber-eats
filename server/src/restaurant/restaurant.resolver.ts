@@ -10,7 +10,6 @@ import { EditRestaurantDto, EditRestaurantRes } from './dto/edit-restaurant.dto'
 import { GetRestaurantDto, GetRestaurantRes } from './dto/get-restaurant.dto'
 import { RestaurantsDto, RestaurantsRes } from './dto/restaurants.dto'
 import { SearchRestaurantsInput, SearchRestaurantsRes } from './dto/search-restaurants.dto'
-import { Restaurant } from './restaurant.schema'
 import { RestaurantService } from './restaurant.service'
 
 @Resolver()

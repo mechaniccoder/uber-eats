@@ -23,7 +23,7 @@ export class RestaurantService {
     const categorySlug = categoryName.replace(/\s+/g, '-')
 
     const newRestaurant = new this.restaurantModel(createRestaurantDto)
-    newRestaurant.owner = authUser
+    newRestaurant.owner = authUser._id
 
     const existingCategory = await this.categoryModel.findOne({ slug: categorySlug })
     if (existingCategory) {
@@ -44,11 +44,11 @@ export class RestaurantService {
   async edit(authUser: User, editRestaurantDto: EditRestaurantDto): Promise<Restaurant> {
     const { id } = editRestaurantDto
 
-    const aRestaurant = await this.restaurantModel.findById(id).populate('owner')
+    const aRestaurant = await this.restaurantModel.findById(id)
 
     if (!aRestaurant) throw new HttpException('Reataurant not existed', HttpStatus.BAD_REQUEST)
 
-    if (aRestaurant.owner.id !== authUser.id) {
+    if (aRestaurant.owner !== authUser._id) {
       throw new HttpException('Reataurant not authorized', HttpStatus.FORBIDDEN)
     }
 
@@ -76,11 +76,11 @@ export class RestaurantService {
   async delete(owner: User, deleteRestaurantDto: DeleteRestaurantDto) {
     const { id: restaurantId } = deleteRestaurantDto
 
-    const aRestaurant = await this.restaurantModel.findById(restaurantId).populate('owner')
+    const aRestaurant = await this.restaurantModel.findById(restaurantId)
 
     if (!aRestaurant) throw new RestaurantNotFoundException()
 
-    if (aRestaurant.owner.id !== owner.id) throw new RestaurantAuthorizedException()
+    if (aRestaurant.owner !== owner._id) throw new RestaurantAuthorizedException()
 
     await aRestaurant.delete()
   }

@@ -4,7 +4,8 @@ import { Response } from 'src/shared/factory/response.factory'
 import { CreateDishInput, CreateDishRes } from './dto/create-dish.dto'
 import { DishService } from './dish.service'
 import { Role } from '../../auth/role.decorator'
-import { UserRole } from '../../user/schema/user.schema'
+import { User, UserRole } from '../../user/schema/user.schema'
+import { AuthUser } from '../../auth/auth-user.decorator'
 
 @Resolver((of) => Dish)
 export class DishResolver {
@@ -12,8 +13,11 @@ export class DishResolver {
 
   @Role(UserRole.owner)
   @Mutation((returns) => CreateDishRes)
-  async createDish(@Args('createDishInput') createDishInput: CreateDishInput) {
-    const dish = await this.dishService.create(createDishInput)
+  async createDish(
+    @AuthUser() owner: User,
+    @Args('createDishInput') createDishInput: CreateDishInput,
+  ) {
+    const dish = await this.dishService.create(owner, createDishInput)
     return Response.create(true, null, true)
   }
 }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Field, InputType, ObjectType } from '@nestjs/graphql'
+import { Field, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Model, Schema as MSchema, Types } from 'mongoose'
 import { User } from 'src/user/schema/user.schema'
@@ -49,7 +49,7 @@ export class Restaurant {
     ref: User.name,
     required: true,
   })
-  owner: User
+  owner: Types.ObjectId
 
   @Field((type) => Dish)
   @Prop({

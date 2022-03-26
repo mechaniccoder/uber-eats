@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Field, InputType, ObjectType, OmitType, registerEnumType } from '@nestjs/graphql'
+import { Field, ObjectType, OmitType, registerEnumType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, Model, ObjectId } from 'mongoose'
+import { Document, Model, Types } from 'mongoose'
 import * as bcrypt from 'bcrypt'
 import { IsEnum } from 'class-validator'
 import { BadGatewayException } from '@nestjs/common'
@@ -28,6 +28,8 @@ export interface UserModel extends Model<UserDocument> {
   timestamps: true,
 })
 export class User {
+  _id: Types.ObjectId
+
   @Field((type) => String)
   id: string
 

@@ -37,7 +37,7 @@ export class Dish {
   })
   description: string
 
-  @Field((type) => String)
+  @Field((type) => [String])
   @Prop({
     type: [String],
   })

@@ -4,6 +4,8 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Restaurant } from '../restaurant.schema'
 import { Model } from 'mongoose'
 import { RestaurantService } from '../restaurant.service'
+import { RestaurantAuthorizedException, RestaurantNotFoundException } from '../restaurant.exception'
+import { User, UserDocument } from '../../user/schema/user.schema'
 
 @Injectable()
 export class DishService {
@@ -12,9 +14,21 @@ export class DishService {
     private readonly restaurantService: RestaurantService,
   ) {}
 
-  async create(createDishInput: CreateDishInput) {
+  async create(owner: User, createDishInput: CreateDishInput) {
     const { restaurantId } = createDishInput
 
     const aRestaurant = await this.restaurantModel.findById(restaurantId)
+    if (!aRestaurant) {
+      throw new RestaurantNotFoundException()
+    }
+
+    if (owner._id !== aRestaurant.owner) {
+      throw new RestaurantAuthorizedException()
+    }
+
+    aRestaurant.dishes.push(createDishInput)
+    await aRestaurant.save()
+
+    return createDishInput
   }
 }
