@@ -14,6 +14,7 @@ import { JwtMiddleware } from './jwt/jwt.middleware'
 import { AuthModule } from './auth/auth.module'
 import { MailModule } from './mail/mail.module'
 import { DishModule } from './restaurant/dish/dish.module'
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { DishModule } from './restaurant/dish/dish.module'
       domain: process.env.MAILGUN_DOMAIN_NAME,
       from: process.env.MAILGUN_FROM,
     }),
+    OrderModule,
   ],
   controllers: [],
   providers: [

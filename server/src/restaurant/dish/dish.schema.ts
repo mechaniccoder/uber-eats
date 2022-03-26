@@ -6,9 +6,7 @@ export type DishDocument = Document & Dish
 
 @InputType('DishInput', { isAbstract: true })
 @ObjectType()
-@Schema({
-  _id: false,
-})
+@Schema()
 export class Dish {
   @Field((type) => String)
   @Prop({

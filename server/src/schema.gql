@@ -150,6 +150,28 @@ type DeleteDishRes {
   data: [Dish!]
 }
 
+type Order {
+  customer: User!
+  driver: User
+  restaurant: Restaurant!
+  dishes: [Dish!]!
+  status: OrderStatus!
+  total: Float!
+}
+
+enum OrderStatus {
+  Pending
+  Cooking
+  PickedUp
+  Delivered
+}
+
+type CreateOrderRes {
+  ok: Boolean!
+  error: String
+  data: Order!
+}
+
 type Query {
   restaurants(restaurantsArgs: RestaurantsDto): RestaurantsRes!
   getRestaurant(getRestaurantInput: GetRestaurantDto!): GetRestaurantRes!
@@ -199,6 +221,7 @@ type Mutation {
   login(loginArgs: LoginDto!): LoginRes!
   updateProfile(updateProfileArgs: UpdateProfileDto!): UpdateProfileRes!
   verifyCode(verifyCodeArgs: VerifyCodeDto!): VerifyCodRes!
+  createOrder(createOrderInput: CreateOrderInput!): CreateOrderRes!
 }
 
 input CreateRestaurantDto {
@@ -252,4 +275,9 @@ input UpdateProfileDto {
 
 input VerifyCodeDto {
   code: String!
+}
+
+input CreateOrderInput {
+  dishes: [DishInput!]!
+  restaurantId: String!
 }
