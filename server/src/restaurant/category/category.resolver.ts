@@ -5,7 +5,7 @@ import { Category } from './category.schema'
 import { CategoryService } from './category.service'
 import { AllCategoriesRes } from './dto/all-categories.dto'
 import { CategoryDto, CategoryRes } from './dto/category.dto'
-import { RestaurantService } from './restaurant.service'
+import { RestaurantService } from '../restaurant.service'
 
 @Resolver((of) => Category)
 export class CategoryResolver {

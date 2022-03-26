@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { User } from 'src/user/schema/user.schema'
-import { Category, CategoryModel } from './category.schema'
+import { Category, CategoryModel } from './category/category.schema'
 import { CreateRestaurantDto } from './dto/create-restaurant.dto'
 import { DeleteRestaurantDto } from './dto/delete-restaurant.dto'
 import { EditRestaurantDto } from './dto/edit-restaurant.dto'

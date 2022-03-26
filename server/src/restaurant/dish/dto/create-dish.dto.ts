@@ -12,7 +12,4 @@ export class CreateDishInput extends PartialType(Dish, InputType) {
 export class CreateDishRes extends ResponseDto {
   @Field((type) => Dish, { nullable: true })
   data?: Dish
-
-  @Field((type) => String)
-  restaurantId: Types.ObjectId
 }

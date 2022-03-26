@@ -142,7 +142,6 @@ type CreateDishRes {
   ok: Boolean!
   error: String
   data: Dish
-  restaurantId: String!
 }
 
 type Query {
@@ -188,7 +187,7 @@ type Mutation {
   createRestaurant(createRestaurantArgs: CreateRestaurantDto!): CreateRestaurantRes!
   editRestaurant(editRestaurantArgs: EditRestaurantDto!): EditRestaurantRes!
   deleteRestaurant(deleteRestaurantArgs: DeleteRestaurantDto!): DeleteRestaurantRes!
-  createDish: CreateDishRes!
+  createDish(createDishInput: CreateDishInput!): CreateDishRes!
   createUser(createUserArgs: CreateUserDto!): CreateUserRes!
   login(loginArgs: LoginDto!): LoginRes!
   updateProfile(updateProfileArgs: UpdateProfileDto!): UpdateProfileRes!
@@ -212,6 +211,15 @@ input EditRestaurantDto {
 
 input DeleteRestaurantDto {
   id: String!
+}
+
+input CreateDishInput {
+  name: String
+  price: Int
+  img: String
+  description: String
+  options: String
+  restaurantId: String!
 }
 
 input CreateUserDto {
