@@ -9,7 +9,7 @@ export class JwtService {
 
   sign(payload: any): string {
     return jwt.sign(payload, this.options.privateKey, {
-      expiresIn: '1h',
+      expiresIn: '24h',
     })
   }
 

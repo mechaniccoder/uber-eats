@@ -144,6 +144,12 @@ type CreateDishRes {
   data: Dish
 }
 
+type DeleteDishRes {
+  ok: Boolean!
+  error: String
+  data: [Dish!]
+}
+
 type Query {
   restaurants(restaurantsArgs: RestaurantsDto): RestaurantsRes!
   getRestaurant(getRestaurantInput: GetRestaurantDto!): GetRestaurantRes!
@@ -188,6 +194,7 @@ type Mutation {
   editRestaurant(editRestaurantArgs: EditRestaurantDto!): EditRestaurantRes!
   deleteRestaurant(deleteRestaurantArgs: DeleteRestaurantDto!): DeleteRestaurantRes!
   createDish(createDishInput: CreateDishInput!): CreateDishRes!
+  deleteDish(deleteDishInput: DeleteDishInput!): DeleteDishRes!
   createUser(createUserArgs: CreateUserDto!): CreateUserRes!
   login(loginArgs: LoginDto!): LoginRes!
   updateProfile(updateProfileArgs: UpdateProfileDto!): UpdateProfileRes!
@@ -219,6 +226,11 @@ input CreateDishInput {
   img: String
   description: String
   options: [String!]
+  restaurantId: String!
+}
+
+input DeleteDishInput {
+  name: String!
   restaurantId: String!
 }
 
