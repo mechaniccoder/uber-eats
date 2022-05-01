@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Field, InputType, Int, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Types } from 'mongoose'
@@ -12,6 +13,7 @@ export class Dish {
   @Prop({
     type: String,
     required: true,
+    unique: true,
   })
   name: string
 

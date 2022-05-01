@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Field, Float, ObjectType, registerEnumType } from '@nestjs/graphql'
 import { User } from '../user/schema/user.schema'
@@ -42,14 +43,14 @@ export class Order {
     ref: Restaurant.name,
     required: true,
   })
-  restaurant: Restaurant
+  restaurant: Types.ObjectId
 
-  @Field((type) => [Dish])
+  @Field((type) => [String])
   @Prop({
-    type: [DishSchema],
+    type: [String],
     required: true,
   })
-  dishes: Dish[]
+  dishes: string[]
 
   @Field((type) => OrderStatus)
   @Prop({
