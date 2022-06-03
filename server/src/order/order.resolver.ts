@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Args, Mutation, Resolver } from '@nestjs/graphql'
 import { Order } from './order.schema'
 import { OrderService } from './order.service'

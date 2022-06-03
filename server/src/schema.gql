@@ -154,7 +154,7 @@ type Order {
   customer: User!
   driver: User
   restaurant: Restaurant!
-  dishes: [Dish!]!
+  dishes: [String!]!
   status: OrderStatus!
   total: Float!
 }
@@ -169,7 +169,7 @@ enum OrderStatus {
 type CreateOrderRes {
   ok: Boolean!
   error: String
-  data: Order!
+  data: Order
 }
 
 type Query {
@@ -278,6 +278,6 @@ input VerifyCodeDto {
 }
 
 input CreateOrderInput {
-  dishes: [DishInput!]!
   restaurantId: String!
+  dishName: String!
 }

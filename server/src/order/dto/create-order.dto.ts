@@ -2,12 +2,12 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql'
 import { Order } from '../order.schema'
 import { ResponseDto } from '../../shared/dto/response.dto'
-import { ObjectId } from 'mongoose'
+import { Types } from 'mongoose'
 
 @InputType()
 export class CreateOrderInput {
   @Field((type) => String)
-  restaurantId: ObjectId
+  restaurantId: Types.ObjectId
 
   @Field((type) => String)
   dishName: string
@@ -15,6 +15,6 @@ export class CreateOrderInput {
 
 @ObjectType()
 export class CreateOrderRes extends ResponseDto {
-  @Field((type) => Order)
+  @Field((type) => Order, { nullable: true })
   data?: Order
 }

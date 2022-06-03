@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Order, OrderStatus } from './order.schema'
-import { Model } from 'mongoose'
+import mongoose, { Model, Types } from 'mongoose'
 import { User } from '../user/schema/user.schema'
 import { CreateOrderInput } from './dto/create-order.dto'
 import { Restaurant } from '../restaurant/restaurant.schema'
@@ -27,12 +27,20 @@ export class OrderService {
       throw new DishNotFoundException()
     }
 
-    return await this.orderModel.create({
+    const aOrder = await this.orderModel.create({
       status: OrderStatus.Pending,
       dishes: [dishName],
       customer: customer._id,
       restaurant: restaurantId,
       total: 0,
     })
+
+    const populatedOrder = await aOrder.populate<{ restaurant: Restaurant }>(
+      'restaurant',
+      'name address img',
+    )
+
+    console.log(populatedOrder)
+    return populatedOrder
   }
 }

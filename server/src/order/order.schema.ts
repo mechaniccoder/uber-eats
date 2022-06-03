@@ -3,7 +3,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Field, Float, ObjectType, registerEnumType } from '@nestjs/graphql'
 import { User } from '../user/schema/user.schema'
 import { Restaurant } from '../restaurant/restaurant.schema'
-import { Dish, DishSchema } from '../restaurant/dish/dish.schema'
 import { Types } from 'mongoose'
 
 export enum OrderStatus {
