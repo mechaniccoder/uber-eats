@@ -9,8 +9,8 @@ export class CreateOrderInput {
   @Field((type) => String)
   restaurantId: Types.ObjectId
 
-  @Field((type) => String)
-  dishName: string
+  @Field((type) => [String])
+  dishIds: Types.ObjectId[]
 }
 
 @ObjectType()

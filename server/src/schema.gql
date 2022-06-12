@@ -279,5 +279,5 @@ input VerifyCodeDto {
 
 input CreateOrderInput {
   restaurantId: String!
-  dishName: String!
+  dishIds: [String!]!
 }

@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Order, OrderStatus } from './order.schema'
-import mongoose, { Model, Types } from 'mongoose'
+import mongoose, { Model } from 'mongoose'
 import { User } from '../user/schema/user.schema'
 import { CreateOrderInput } from './dto/create-order.dto'
 import { Restaurant } from '../restaurant/restaurant.schema'
 import { RestaurantNotFoundException } from '../restaurant/restaurant.exception'
 import { DishNotFoundException } from '../restaurant/dish/dish.exception'
+import { Dish } from '../restaurant/dish/dish.schema'
 
 @Injectable()
 export class OrderService {
@@ -16,31 +17,30 @@ export class OrderService {
   ) {}
 
   async create(customer: User, createOrderInput: CreateOrderInput): Promise<Order> {
-    const { restaurantId, dishName } = createOrderInput
+    const { restaurantId, dishIds } = createOrderInput
+
     const restaurant = await this.restaurantModel.findById(restaurantId)
     if (!restaurant) {
       throw new RestaurantNotFoundException()
     }
 
-    const dish = restaurant.dishes.find((dish) => dish.name === dishName)
-    if (!dish) {
-      throw new DishNotFoundException()
+    const dishes: Dish[] = []
+    let totalPrice = 0
+    for (const dishId of dishIds) {
+      const dishDoc = restaurant.dishes.find((dish) => dish.id === dishId)
+      if (!dishDoc) throw new DishNotFoundException()
+      totalPrice += dishDoc.price
+      dishes.push(dishDoc)
     }
 
-    const aOrder = await this.orderModel.create({
+    const anOrder = await this.orderModel.create({
       status: OrderStatus.Pending,
-      dishes: [dishName],
+      dishes: [...dishes.map((dish) => dish.name)],
       customer: customer._id,
-      restaurant: restaurantId,
-      total: 0,
+      restaurant: new mongoose.Types.ObjectId(restaurantId),
+      total: totalPrice,
     })
 
-    const populatedOrder = await aOrder.populate<{ restaurant: Restaurant }>(
-      'restaurant',
-      'name address img',
-    )
-
-    console.log(populatedOrder)
-    return populatedOrder
+    return await anOrder.populate<{ restaurant: Restaurant }>('restaurant', 'name address img')
   }
 }
