@@ -34,7 +34,7 @@ export class Order {
     type: Types.ObjectId,
     ref: User.name,
   })
-  driver?: User
+  driver?: Types.ObjectId
 
   @Field((type) => Restaurant)
   @Prop({

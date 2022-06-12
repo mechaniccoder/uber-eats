@@ -8,7 +8,8 @@ import { Restaurant } from '../restaurant/restaurant.schema'
 import { RestaurantNotFoundException } from '../restaurant/restaurant.exception'
 import { DishNotFoundException } from '../restaurant/dish/dish.exception'
 import { Dish } from '../restaurant/dish/dish.schema'
-import { GetOrderInput } from './dto/get-order.dto'
+import { GetOrdersInput } from './dto/get-orders.dto'
+import { OrderNotAuthorizedException, OrderNotFoundException } from './order.exception'
 
 @Injectable()
 export class OrderService {
@@ -45,7 +46,7 @@ export class OrderService {
     return await anOrder.populate<{ restaurant: Restaurant }>('restaurant', 'name address img')
   }
 
-  public async getOrders(user: User, getOrderInput: GetOrderInput): Promise<Order[]> {
+  public async getOrders(user: User, getOrderInput: GetOrdersInput): Promise<Order[]> {
     const { role } = user
     const { status } = getOrderInput
 
@@ -63,5 +64,24 @@ export class OrderService {
     }
 
     return orders
+  }
+
+  public async getOrder(
+    user: User,
+    orderId: string,
+  ): Promise<Omit<Order, 'restaurant'> & { restaurant: Restaurant }> {
+    const order = await this.orderModel
+      .findById(orderId)
+      .populate<{ restaurant: Restaurant }>('restaurant')
+    if (!order) throw new OrderNotFoundException()
+
+    if (
+      order.customer !== user._id &&
+      order.restaurant.owner !== user._id &&
+      order.driver !== user._id
+    )
+      throw new OrderNotAuthorizedException()
+
+    return order
   }
 }

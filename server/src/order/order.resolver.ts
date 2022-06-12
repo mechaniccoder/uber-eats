@@ -7,7 +7,8 @@ import { AuthUser } from '../auth/auth-user.decorator'
 import { User, UserRole } from '../user/schema/user.schema'
 import { Response } from '../shared/factory/response.factory'
 import { Role } from '../auth/role.decorator'
-import { GetOrderInput, GetOrderRes } from './dto/get-order.dto'
+import { GetOrdersInput, GetOrdersRes } from './dto/get-orders.dto'
+import { GetOrderRes } from './dto/get-order.dto'
 
 @Resolver((of) => Order)
 export class OrderResolver {
@@ -24,12 +25,21 @@ export class OrderResolver {
   }
 
   @Role('any')
-  @Query((returns) => GetOrderRes)
+  @Query((returns) => GetOrdersRes)
   public async getOrders(
     @AuthUser() user: User,
-    @Args('getOrderInput') getOrderInput: GetOrderInput,
-  ): Promise<GetOrderRes> {
+    @Args('getOrderInput') getOrderInput: GetOrdersInput,
+  ): Promise<GetOrdersRes> {
     const orders = await this.orderService.getOrders(user, getOrderInput)
     return Response.create(true, null, orders)
+  }
+
+  @Query((returns) => GetOrderRes)
+  public async getOrder(
+    @AuthUser() user: User,
+    @Args('orderId', { type: () => String }) orderId: string,
+  ): Promise<GetOrderRes> {
+    const order = await this.orderService.getOrder(user, orderId)
+    return Response.create(true, null, order)
   }
 }
