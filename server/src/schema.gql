@@ -219,7 +219,7 @@ input CategoryDto {
 }
 
 input GetOrderInput {
-  status: OrderStatus!
+  status: OrderStatus
 }
 
 type Mutation {
