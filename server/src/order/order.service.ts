@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Order, OrderStatus } from './order.schema'
 import mongoose, { Model } from 'mongoose'
-import { User } from '../user/schema/user.schema'
+import { User, UserRole } from '../user/schema/user.schema'
 import { CreateOrderInput } from './dto/create-order.dto'
 import { Restaurant } from '../restaurant/restaurant.schema'
 import { RestaurantNotFoundException } from '../restaurant/restaurant.exception'
 import { DishNotFoundException } from '../restaurant/dish/dish.exception'
 import { Dish } from '../restaurant/dish/dish.schema'
+import { GetOrderInput } from './dto/get-order.dto'
 
 @Injectable()
 export class OrderService {
@@ -42,5 +43,25 @@ export class OrderService {
     })
 
     return await anOrder.populate<{ restaurant: Restaurant }>('restaurant', 'name address img')
+  }
+
+  public async getOrders(user: User, getOrderInput: GetOrderInput): Promise<Order[]> {
+    const { role } = user
+    const { status } = getOrderInput
+
+    let orders: Order[] = []
+    if (role === UserRole.customer) {
+      orders = await this.orderModel.find({ ...(status && { status }), customer: user._id })
+    } else if (role === UserRole.owner) {
+      const restaurants = await this.restaurantModel.find({ owner: user._id })
+      orders = await this.orderModel.find({ ...(status && { status }) }).in(
+        'restaurant',
+        restaurants.map((restaurant) => restaurant._id),
+      )
+    } else {
+      orders = await this.orderModel.find({ ...(status && { status }), driver: user._id })
+    }
+
+    return orders
   }
 }

@@ -172,6 +172,12 @@ type CreateOrderRes {
   data: Order
 }
 
+type GetOrderRes {
+  ok: Boolean!
+  error: String
+  data: [Order!]
+}
+
 type Query {
   restaurants(restaurantsArgs: RestaurantsDto): RestaurantsRes!
   getRestaurant(getRestaurantInput: GetRestaurantDto!): GetRestaurantRes!
@@ -180,6 +186,7 @@ type Query {
   category(categoryArgs: CategoryDto!): CategoryRes!
   me: MeRes!
   profile(id: String!): ProfileRes!
+  getOrders(getOrderInput: GetOrderInput!): GetOrderRes!
 }
 
 input RestaurantsDto {
@@ -209,6 +216,10 @@ input SearchRestaurantsInput {
 
 input CategoryDto {
   slug: String!
+}
+
+input GetOrderInput {
+  status: OrderStatus!
 }
 
 type Mutation {
