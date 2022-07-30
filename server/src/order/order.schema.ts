@@ -8,6 +8,7 @@ import { Types } from 'mongoose'
 export enum OrderStatus {
   Pending = 'Pending',
   Cooking = 'Cooking',
+  Cooked = 'Cooked',
   PickedUp = 'PickedUp',
   Delivered = 'Delivered',
 }
@@ -16,7 +17,7 @@ registerEnumType(OrderStatus, {
   name: 'OrderStatus',
 })
 
-@ObjectType()
+@ObjectType('order')
 @Schema({
   timestamps: true,
 })

@@ -9,6 +9,7 @@ import { Response } from '../shared/factory/response.factory'
 import { Role } from '../auth/role.decorator'
 import { GetOrdersInput, GetOrdersRes } from './dto/get-orders.dto'
 import { GetOrderRes } from './dto/get-order.dto'
+import { UpdateOrderInput, UpdateOrderRes } from './dto/update-order.dto'
 
 @Resolver((of) => Order)
 export class OrderResolver {
@@ -38,8 +39,17 @@ export class OrderResolver {
   public async getOrder(
     @AuthUser() user: User,
     @Args('orderId', { type: () => String }) orderId: string,
-  ): Promise<GetOrderRes> {
+  ) {
     const order = await this.orderService.getOrder(user, orderId)
     return Response.create(true, null, order)
+  }
+
+  @Mutation((returns) => UpdateOrderRes)
+  public async updateOrder(
+    @AuthUser() user: User,
+    @Args('updateOrderInput') updateOrderInput: UpdateOrderInput,
+  ) {
+    const updatedOrder = await this.orderService.update(user, updateOrderInput)
+    return Response.create(true, null, updatedOrder)
   }
 }

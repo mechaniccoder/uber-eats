@@ -162,6 +162,7 @@ type Order {
 enum OrderStatus {
   Pending
   Cooking
+  Cooked
   PickedUp
   Delivered
 }
@@ -172,10 +173,22 @@ type CreateOrderRes {
   data: Order
 }
 
-type GetOrderRes {
+type GetOrdersRes {
   ok: Boolean!
   error: String
   data: [Order!]
+}
+
+type GetOrderRes {
+  ok: Boolean!
+  error: String
+  data: Order
+}
+
+type UpdateOrderRes {
+  ok: Boolean!
+  error: String
+  data: Order
 }
 
 type Query {
@@ -186,7 +199,8 @@ type Query {
   category(categoryArgs: CategoryDto!): CategoryRes!
   me: MeRes!
   profile(id: String!): ProfileRes!
-  getOrders(getOrderInput: GetOrderInput!): GetOrderRes!
+  getOrders(getOrderInput: GetOrdersInput!): GetOrdersRes!
+  getOrder(orderId: String!): GetOrderRes!
 }
 
 input RestaurantsDto {
@@ -218,7 +232,7 @@ input CategoryDto {
   slug: String!
 }
 
-input GetOrderInput {
+input GetOrdersInput {
   status: OrderStatus
 }
 
@@ -233,6 +247,7 @@ type Mutation {
   updateProfile(updateProfileArgs: UpdateProfileDto!): UpdateProfileRes!
   verifyCode(verifyCodeArgs: VerifyCodeDto!): VerifyCodRes!
   createOrder(createOrderInput: CreateOrderInput!): CreateOrderRes!
+  updateOrder(updateOrderInput: UpdateOrderInput!): UpdateOrderRes!
 }
 
 input CreateRestaurantDto {
@@ -291,4 +306,9 @@ input VerifyCodeDto {
 input CreateOrderInput {
   restaurantId: String!
   dishIds: [String!]!
+}
+
+input UpdateOrderInput {
+  status: OrderStatus!
+  id: String!
 }
