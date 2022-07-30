@@ -110,7 +110,6 @@ export class OrderService {
     const updatedOrder = await (
       await this.orderModel.findByIdAndUpdate(id, { status }, { new: true })
     ).populate('customer restaurant')
-    console.log(updatedOrder)
 
     return updatedOrder
   }

@@ -201,6 +201,7 @@ type Query {
   profile(id: String!): ProfileRes!
   getOrders(getOrderInput: GetOrdersInput!): GetOrdersRes!
   getOrder(orderId: String!): GetOrderRes!
+  test: Boolean!
 }
 
 input RestaurantsDto {
@@ -311,4 +312,8 @@ input CreateOrderInput {
 input UpdateOrderInput {
   status: OrderStatus!
   id: String!
+}
+
+type Subscription {
+  orderSubscription: String!
 }

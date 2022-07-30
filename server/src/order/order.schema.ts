@@ -17,7 +17,7 @@ registerEnumType(OrderStatus, {
   name: 'OrderStatus',
 })
 
-@ObjectType('order')
+@ObjectType()
 @Schema({
   timestamps: true,
 })

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
 import { Order } from './order.schema'
 import { OrderService } from './order.service'
 import { CreateOrderInput, CreateOrderRes } from './dto/create-order.dto'
@@ -10,6 +10,9 @@ import { Role } from '../auth/role.decorator'
 import { GetOrdersInput, GetOrdersRes } from './dto/get-orders.dto'
 import { GetOrderRes } from './dto/get-order.dto'
 import { UpdateOrderInput, UpdateOrderRes } from './dto/update-order.dto'
+import { PubSub } from 'graphql-subscriptions'
+
+const pubsub = new PubSub()
 
 @Resolver((of) => Order)
 export class OrderResolver {
@@ -51,5 +54,19 @@ export class OrderResolver {
   ) {
     const updatedOrder = await this.orderService.update(user, updateOrderInput)
     return Response.create(true, null, updatedOrder)
+  }
+
+  @Role('any')
+  @Subscription((returns) => String)
+  public async orderSubscription(@AuthUser() user: User) {
+    return pubsub.asyncIterator('hello')
+  }
+
+  @Query((returns) => Boolean)
+  public test() {
+    pubsub.publish('hello', {
+      orderSubscription: 'hi',
+    })
+    return true
   }
 }

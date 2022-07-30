@@ -7,14 +7,15 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import * as Joi from 'joi'
 import { RestaurantModule } from './restaurant'
 import { UserModule } from './user/user.module'
-import { APP_FILTER } from '@nestjs/core'
+import { APP_FILTER, APP_GUARD } from '@nestjs/core'
 import { ExceptionFilter } from './shared/filter/exception.filter'
 import { JwtModule } from './jwt/jwt.module'
 import { JwtMiddleware } from './jwt/jwt.middleware'
 import { AuthModule } from './auth/auth.module'
 import { MailModule } from './mail/mail.module'
 import { DishModule } from './restaurant/dish/dish.module'
-import { OrderModule } from './order/order.module';
+import { OrderModule } from './order/order.module'
+import { AuthGuard } from './auth/auth.guard'
 
 @Module({
   imports: [
@@ -43,7 +44,18 @@ import { OrderModule } from './order/order.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      context: ({ req }) => ({ user: req['user'] }),
+      subscriptions: {
+        'subscriptions-transport-ws': {
+          onConnect: (connectionParams) => {
+            return {
+              token: connectionParams.authorization,
+            }
+          },
+        },
+      },
+      context: ({ req }) => {
+        return { token: req.headers['authorization'] }
+      },
     }),
     RestaurantModule,
     DishModule,
@@ -62,6 +74,10 @@ import { OrderModule } from './order/order.module';
     {
       provide: APP_FILTER,
       useClass: ExceptionFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
 })
