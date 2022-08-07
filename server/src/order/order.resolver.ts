@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
+import { PubSub } from 'graphql-subscriptions'
+import { AuthUser } from '../auth/auth-user.decorator'
+import { Role } from '../auth/role.decorator'
+import { Response } from '../shared/factory/response.factory'
+import { User, UserRole } from '../user/schema/user.schema'
+import { CreateOrderInput, CreateOrderRes } from './dto/create-order.dto'
+import { GetOrderRes } from './dto/get-order.dto'
+import { GetOrdersInput, GetOrdersRes } from './dto/get-orders.dto'
+import { UpdateOrderInput, UpdateOrderRes } from './dto/update-order.dto'
 import { Order } from './order.schema'
 import { OrderService } from './order.service'
-import { CreateOrderInput, CreateOrderRes } from './dto/create-order.dto'
-import { AuthUser } from '../auth/auth-user.decorator'
-import { User, UserRole } from '../user/schema/user.schema'
-import { Response } from '../shared/factory/response.factory'
-import { Role } from '../auth/role.decorator'
-import { GetOrdersInput, GetOrdersRes } from './dto/get-orders.dto'
-import { GetOrderRes } from './dto/get-order.dto'
-import { UpdateOrderInput, UpdateOrderRes } from './dto/update-order.dto'
-import { PubSub } from 'graphql-subscriptions'
 
 const pubsub = new PubSub()
 
@@ -59,6 +59,8 @@ export class OrderResolver {
   @Role('any')
   @Subscription((returns) => String)
   public async orderSubscription(@AuthUser() user: User) {
+    console.log(user)
+
     return pubsub.asyncIterator('hello')
   }
 

@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { CreateUserDto } from './dto/create-user.dto'
-import { User, UserDocument, UserModel, UserWithoutPassword } from './schema/user.schema'
-import { LoginDto } from './dto/login.dto'
 import { ConfigService } from '@nestjs/config'
-import { JwtService } from '../jwt/jwt.service'
+import { InjectModel } from '@nestjs/mongoose'
 import { FilterQuery } from 'mongoose'
-import { ExistException } from './user.exception'
-import { UpdateProfileDto } from './dto/update-profile.dto'
 import { MailService } from 'src/mail/mail.service'
+import { JwtService } from '../jwt/jwt.service'
+import { CreateUserDto } from './dto/create-user.dto'
+import { LoginDto } from './dto/login.dto'
+import { UpdateProfileDto } from './dto/update-profile.dto'
+import { User, UserDocument, UserModel, UserWithoutPassword } from './schema/user.schema'
+import { ExistException } from './user.exception'
 
 @Injectable()
 export class UserService {
@@ -66,7 +66,7 @@ export class UserService {
     return token
   }
 
-  async find(query: FilterQuery<UserDocument>): Promise<UserWithoutPassword> {
+  async find(query: FilterQuery<UserDocument>): Promise<User> {
     const user = await this.userModel.findOne(query, { __v: 0 })
     if (!user) throw new NotFoundException('User not found')
 

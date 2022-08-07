@@ -1,16 +1,20 @@
-import { CanActivate, Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common'
-import { Observable } from 'rxjs'
-import { GqlExecutionContext } from '@nestjs/graphql'
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { TRoles } from './role.decorator'
-import { User } from 'src/user/schema/user.schema'
+import { GqlExecutionContext } from '@nestjs/graphql'
 import { JwtService } from 'src/jwt/jwt.service'
+import { User } from 'src/user/schema/user.schema'
+import { UserService } from 'src/user/user.service'
+import { TRoles } from './role.decorator'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector, private jwtService: JwtService) {}
+  constructor(
+    private reflector: Reflector,
+    private jwtService: JwtService,
+    private userService: UserService,
+  ) {}
 
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext) {
     const roles = this.reflector.get<TRoles[]>(
       'roles',
       GqlExecutionContext.create(context).getHandler(),
@@ -20,13 +24,26 @@ export class AuthGuard implements CanActivate {
 
     if (typeof roles === 'undefined') return true
 
-    console.log(gqlContext.token)
+    const { token } = gqlContext
 
-    const user = gqlContext['user'] as User
+    const payload = this.jwtService.verify(token)
+
+    if (typeof payload !== 'object' || !payload.hasOwnProperty('id')) {
+      return false
+    }
+
+    const user = await this.userService.find({ _id: payload.id })
+
     if (!user) return false
+
+    this.attachUserToContext(gqlContext, user)
 
     if (roles.includes('any')) return true
 
     return roles.includes(user.role)
+  }
+
+  private attachUserToContext(gqlContext: any, user: User) {
+    gqlContext.user = user
   }
 }
