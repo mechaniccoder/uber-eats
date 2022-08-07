@@ -1,7 +1,7 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
+import * as jwt from 'jsonwebtoken'
 import { JwtModuleOptions } from './interface/jwt-module-options'
 import { CONFIG_OPTIONS } from './jwt.constant'
-import * as jwt from 'jsonwebtoken'
 
 @Injectable()
 export class JwtService {
@@ -15,5 +15,10 @@ export class JwtService {
 
   verify(token: string) {
     return jwt.verify(token, this.options.privateKey)
+  }
+
+  validatePayload<T>(payload: T): payload is T & { id: string } {
+    if (typeof payload !== 'object' || !payload.hasOwnProperty('id')) return false
+    return true
   }
 }
