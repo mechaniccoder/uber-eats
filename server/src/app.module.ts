@@ -1,21 +1,22 @@
-import { join } from 'path'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { APP_FILTER, APP_GUARD } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
 import { MongooseModule } from '@nestjs/mongoose'
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import * as Joi from 'joi'
-import { RestaurantModule } from './restaurant'
-import { UserModule } from './user/user.module'
-import { APP_FILTER, APP_GUARD } from '@nestjs/core'
-import { ExceptionFilter } from './shared/filter/exception.filter'
-import { JwtModule } from './jwt/jwt.module'
-import { JwtMiddleware } from './jwt/jwt.middleware'
-import { AuthModule } from './auth/auth.module'
-import { MailModule } from './mail/mail.module'
-import { DishModule } from './restaurant/dish/dish.module'
-import { OrderModule } from './order/order.module'
+import { join } from 'path'
 import { AuthGuard } from './auth/auth.guard'
+import { AuthModule } from './auth/auth.module'
+import { JwtMiddleware } from './jwt/jwt.middleware'
+import { JwtModule } from './jwt/jwt.module'
+import { MailModule } from './mail/mail.module'
+import { OrderModule } from './order/order.module'
+import { RestaurantModule } from './restaurant'
+import { DishModule } from './restaurant/dish/dish.module'
+import { CommonModule } from './shared/common.module'
+import { ExceptionFilter } from './shared/filter/exception.filter'
+import { UserModule } from './user/user.module'
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { AuthGuard } from './auth/auth.guard'
       from: process.env.MAILGUN_FROM,
     }),
     OrderModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [

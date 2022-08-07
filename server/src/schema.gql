@@ -28,6 +28,42 @@ type UserWithoutPassword {
   verification: Verification!
 }
 
+type CreateUserRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
+type LoginRes {
+  ok: Boolean!
+  error: String
+  data: String
+}
+
+type MeRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
+type ProfileRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
+type UpdateProfileRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
+type VerifyCodRes {
+  ok: Boolean!
+  error: String
+  data: Boolean
+}
+
 type Category {
   id: String!
   name: String!
@@ -52,6 +88,47 @@ type Restaurant {
   category: Category!
   owner: User!
   dishes: [Dish!]!
+}
+
+type Order {
+  customer: User!
+  driver: User
+  restaurant: Restaurant!
+  dishes: [String!]!
+  status: OrderStatus!
+  total: Float!
+}
+
+enum OrderStatus {
+  Pending
+  Cooking
+  Cooked
+  PickedUp
+  Delivered
+}
+
+type CreateOrderRes {
+  ok: Boolean!
+  error: String
+  data: Order
+}
+
+type GetOrderRes {
+  ok: Boolean!
+  error: String
+  data: Order
+}
+
+type GetOrdersRes {
+  ok: Boolean!
+  error: String
+  data: [Order!]
+}
+
+type UpdateOrderRes {
+  ok: Boolean!
+  error: String
+  data: Order
 }
 
 type CreateRestaurantRes {
@@ -102,42 +179,6 @@ type CategoryRes {
   data: Category
 }
 
-type CreateUserRes {
-  ok: Boolean!
-  error: String
-  data: UserWithoutPassword
-}
-
-type LoginRes {
-  ok: Boolean!
-  error: String
-  data: String
-}
-
-type MeRes {
-  ok: Boolean!
-  error: String
-  data: UserWithoutPassword
-}
-
-type ProfileRes {
-  ok: Boolean!
-  error: String
-  data: UserWithoutPassword
-}
-
-type UpdateProfileRes {
-  ok: Boolean!
-  error: String
-  data: UserWithoutPassword
-}
-
-type VerifyCodRes {
-  ok: Boolean!
-  error: String
-  data: Boolean
-}
-
 type CreateDishRes {
   ok: Boolean!
   error: String
@@ -148,47 +189,6 @@ type DeleteDishRes {
   ok: Boolean!
   error: String
   data: [Dish!]
-}
-
-type Order {
-  customer: User!
-  driver: User
-  restaurant: Restaurant!
-  dishes: [String!]!
-  status: OrderStatus!
-  total: Float!
-}
-
-enum OrderStatus {
-  Pending
-  Cooking
-  Cooked
-  PickedUp
-  Delivered
-}
-
-type CreateOrderRes {
-  ok: Boolean!
-  error: String
-  data: Order
-}
-
-type GetOrdersRes {
-  ok: Boolean!
-  error: String
-  data: [Order!]
-}
-
-type GetOrderRes {
-  ok: Boolean!
-  error: String
-  data: Order
-}
-
-type UpdateOrderRes {
-  ok: Boolean!
-  error: String
-  data: Order
 }
 
 type Query {

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Inject } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
-import { PubSub } from 'graphql-subscriptions'
+import { PUB_SUB } from 'src/shared/common.constants'
 import { AuthUser } from '../auth/auth-user.decorator'
 import { Role } from '../auth/role.decorator'
 import { Response } from '../shared/factory/response.factory'
@@ -12,11 +13,12 @@ import { UpdateOrderInput, UpdateOrderRes } from './dto/update-order.dto'
 import { Order } from './order.schema'
 import { OrderService } from './order.service'
 
-const pubsub = new PubSub()
-
 @Resolver((of) => Order)
 export class OrderResolver {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(
+    private readonly orderService: OrderService,
+    @Inject(PUB_SUB) private readonly pubsub,
+  ) {}
 
   @Role(UserRole.customer)
   @Mutation((returns) => CreateOrderRes)
@@ -61,12 +63,12 @@ export class OrderResolver {
   public async orderSubscription(@AuthUser() user: User) {
     console.log(user)
 
-    return pubsub.asyncIterator('hello')
+    return this.pubsub.asyncIterator('hello')
   }
 
   @Query((returns) => Boolean)
   public test() {
-    pubsub.publish('hello', {
+    this.pubsub.publish('hello', {
       orderSubscription: 'hi',
     })
     return true
