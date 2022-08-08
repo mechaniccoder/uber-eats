@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Inject } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
+import { PubSub } from 'graphql-subscriptions'
 import { PUB_SUB } from 'src/shared/common.constants'
 import { AuthUser } from '../auth/auth-user.decorator'
 import { Role } from '../auth/role.decorator'
@@ -17,7 +18,7 @@ import { OrderService } from './order.service'
 export class OrderResolver {
   constructor(
     private readonly orderService: OrderService,
-    @Inject(PUB_SUB) private readonly pubsub,
+    @Inject(PUB_SUB) private readonly pubsub: PubSub,
   ) {}
 
   @Role(UserRole.customer)
@@ -59,17 +60,24 @@ export class OrderResolver {
   }
 
   @Role('any')
-  @Subscription((returns) => String)
-  public async orderSubscription(@AuthUser() user: User) {
-    console.log(user)
+  @Subscription((returns) => String, {
+    filter: (payload, variables) => {
+      console.log(payload)
 
+      return variables.orderId === payload.orderId
+    },
+    resolve: (payload, args, context, info) => {
+      return `Your order ${payload.orderId} has been updated`
+    },
+  })
+  public async orderSubscription(@Args('orderId') orderId: string) {
     return this.pubsub.asyncIterator('hello')
   }
 
   @Query((returns) => Boolean)
-  public test() {
+  public test(@Args('orderId') orderId: string) {
     this.pubsub.publish('hello', {
-      orderSubscription: 'hi',
+      orderId,
     })
     return true
   }
