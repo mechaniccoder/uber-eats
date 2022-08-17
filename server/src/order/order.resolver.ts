@@ -11,8 +11,9 @@ import { User, UserRole } from '../user/schema/user.schema'
 import { CreateOrderInput, CreateOrderRes } from './dto/create-order.dto'
 import { GetOrderRes } from './dto/get-order.dto'
 import { GetOrdersInput, GetOrdersRes } from './dto/get-orders.dto'
+import { OrderupdatedInput } from './dto/order-updated.dto'
 import { UpdateOrderInput, UpdateOrderRes } from './dto/update-order.dto'
-import { COOKED_ORDER, PENDING_ORDER } from './order.constants'
+import { COOKED_ORDER, ORDER_UPDATED, PENDING_ORDER } from './order.constants'
 import { Order } from './order.schema'
 import { OrderService } from './order.service'
 
@@ -81,5 +82,17 @@ export class OrderResolver {
   })
   cookedOrders() {
     return this.pubsub.asyncIterator(COOKED_ORDER)
+  }
+
+  @Role('any')
+  @Subscription((returns) => Order, {
+    filter: (payload, variables: OrderupdatedInput) => {
+      const { orderId: subscribedOrderId } = variables
+      const { id: updatedOrderId } = payload.orderUpdated
+      return updatedOrderId === subscribedOrderId
+    },
+  })
+  orderUpdated(@Args('orderId') orderId: string) {
+    return this.pubsub.asyncIterator(ORDER_UPDATED)
   }
 }

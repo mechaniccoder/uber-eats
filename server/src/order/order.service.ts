@@ -11,7 +11,7 @@ import { User, UserRole } from '../user/schema/user.schema'
 import { CreateOrderInput } from './dto/create-order.dto'
 import { GetOrdersInput } from './dto/get-orders.dto'
 import { UpdateOrderInput } from './dto/update-order.dto'
-import { COOKED_ORDER, PENDING_ORDER } from './order.constants'
+import { COOKED_ORDER, ORDER_UPDATED, PENDING_ORDER } from './order.constants'
 import {
   OrderNotAuthorizedException,
   OrderNotFoundException,
@@ -126,7 +126,13 @@ export class OrderService {
       this.notifyToDelivery(updatedOrder)
     }
 
+    this.notifyToAll(updatedOrder)
+
     return updatedOrder
+  }
+
+  private notifyToAll(updatedOrder: Order) {
+    this.pubsub.publish(ORDER_UPDATED, { orderUpdated: updatedOrder })
   }
 
   private notifyToDelivery(updatedOrder: Order) {
