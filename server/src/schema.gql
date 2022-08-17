@@ -316,4 +316,5 @@ input UpdateOrderInput {
 
 type Subscription {
   pendingOrders: Order!
+  cookedOrders: Order!
 }

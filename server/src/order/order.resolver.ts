@@ -12,7 +12,7 @@ import { CreateOrderInput, CreateOrderRes } from './dto/create-order.dto'
 import { GetOrderRes } from './dto/get-order.dto'
 import { GetOrdersInput, GetOrdersRes } from './dto/get-orders.dto'
 import { UpdateOrderInput, UpdateOrderRes } from './dto/update-order.dto'
-import { PENDING_ORDER } from './order.constants'
+import { COOKED_ORDER, PENDING_ORDER } from './order.constants'
 import { Order } from './order.schema'
 import { OrderService } from './order.service'
 
@@ -71,5 +71,11 @@ export class OrderResolver {
   })
   pendingOrders() {
     return this.pubsub.asyncIterator(PENDING_ORDER)
+  }
+
+  @Role('delivery')
+  @Subscription((returns) => Order)
+  cookedOrders(@AuthUser() user: User) {
+    return this.pubsub.asyncIterator(COOKED_ORDER)
   }
 }

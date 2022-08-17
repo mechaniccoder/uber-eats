@@ -11,7 +11,7 @@ import { User, UserRole } from '../user/schema/user.schema'
 import { CreateOrderInput } from './dto/create-order.dto'
 import { GetOrdersInput } from './dto/get-orders.dto'
 import { UpdateOrderInput } from './dto/update-order.dto'
-import { PENDING_ORDER } from './order.constants'
+import { COOKED_ORDER, PENDING_ORDER } from './order.constants'
 import {
   OrderNotAuthorizedException,
   OrderNotFoundException,
@@ -103,7 +103,7 @@ export class OrderService {
 
   public async update(user: User, updateOrderInput: UpdateOrderInput) {
     const { id, status } = updateOrderInput
-    // find order
+
     const order = await this.orderModel
       .findById(id)
       .populate<{ restaurant: Restaurant }>('restaurant')
@@ -122,7 +122,19 @@ export class OrderService {
       await this.orderModel.findByIdAndUpdate(id, { status }, { new: true })
     ).populate('customer restaurant')
 
+    if (this.cookCompleted(user, status)) {
+      this.notifyToDelivery(updatedOrder)
+    }
+
     return updatedOrder
+  }
+
+  private notifyToDelivery(updatedOrder: Order) {
+    this.pubsub.publish(COOKED_ORDER, { cookedOrders: { updatedOrder } })
+  }
+
+  private cookCompleted(user: User, status: OrderStatus) {
+    return user.role === UserRole.owner && status === OrderStatus.Cooked
   }
 
   private canSeeOrder(
@@ -180,7 +192,11 @@ export class OrderService {
     }
 
     function canStatusChangedByOwner() {
-      return status === OrderStatus.Cooked || status === OrderStatus.Cooking
+      return (
+        status === OrderStatus.Pending ||
+        status === OrderStatus.Cooked ||
+        status === OrderStatus.Cooking
+      )
     }
   }
 }

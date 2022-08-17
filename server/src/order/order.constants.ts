@@ -1,1 +1,2 @@
 export const PENDING_ORDER = 'PENDING_ORDER'
+export const COOKED_ORDER = 'COOKED_ORDER'
