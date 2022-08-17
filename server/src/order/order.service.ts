@@ -120,7 +120,7 @@ export class OrderService {
 
     const updatedOrder = await (
       await this.orderModel.findByIdAndUpdate(id, { status }, { new: true })
-    ).populate('customer restaurant')
+    ).populate('customer restaurant driver')
 
     if (this.cookCompleted(user, status)) {
       this.notifyToDelivery(updatedOrder)
