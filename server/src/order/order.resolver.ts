@@ -66,7 +66,7 @@ export class OrderResolver {
     filter: (payload, _, context) => {
       const userId: mongoose.Types.ObjectId = context.user._id
       const ownerId: mongoose.Types.ObjectId = payload.pendingOrders.restaurant.owner
-      return userId.equals('1')
+      return userId.equals(ownerId)
     },
   })
   pendingOrders() {
@@ -74,8 +74,12 @@ export class OrderResolver {
   }
 
   @Role('delivery')
-  @Subscription((returns) => Order)
-  cookedOrders(@AuthUser() user: User) {
+  @Subscription((returns) => Order, {
+    filter: (payload, _, context) => {
+      return true
+    },
+  })
+  cookedOrders() {
     return this.pubsub.asyncIterator(COOKED_ORDER)
   }
 }

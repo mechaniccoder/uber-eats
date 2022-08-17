@@ -130,7 +130,7 @@ export class OrderService {
   }
 
   private notifyToDelivery(updatedOrder: Order) {
-    this.pubsub.publish(COOKED_ORDER, { cookedOrders: { updatedOrder } })
+    this.pubsub.publish(COOKED_ORDER, { cookedOrders: updatedOrder })
   }
 
   private cookCompleted(user: User, status: OrderStatus) {
