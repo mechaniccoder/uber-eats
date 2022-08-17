@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Field, Float, ObjectType, registerEnumType } from '@nestjs/graphql'
-import { User } from '../user/schema/user.schema'
-import { Restaurant } from '../restaurant/restaurant.schema'
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
+import { Restaurant } from '../restaurant/restaurant.schema'
+import { User } from '../user/schema/user.schema'
 
 export enum OrderStatus {
   Pending = 'Pending',
@@ -22,6 +22,9 @@ registerEnumType(OrderStatus, {
   timestamps: true,
 })
 export class Order {
+  @Field((type) => String)
+  id: string
+
   @Field((type) => User)
   @Prop({
     type: Types.ObjectId,

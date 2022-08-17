@@ -1,0 +1,1 @@
+export const PENDING_ORDER = 'PENDING_ORDER'

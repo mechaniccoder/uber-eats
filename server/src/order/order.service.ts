@@ -1,26 +1,30 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Order, OrderStatus } from './order.schema'
+import { PubSub } from 'graphql-subscriptions'
 import mongoose, { Model } from 'mongoose'
-import { User, UserRole } from '../user/schema/user.schema'
-import { CreateOrderInput } from './dto/create-order.dto'
-import { Restaurant } from '../restaurant/restaurant.schema'
-import { RestaurantNotFoundException } from '../restaurant/restaurant.exception'
+import { PUB_SUB } from 'src/shared/common.constants'
 import { DishNotFoundException } from '../restaurant/dish/dish.exception'
 import { Dish } from '../restaurant/dish/dish.schema'
+import { RestaurantNotFoundException } from '../restaurant/restaurant.exception'
+import { Restaurant } from '../restaurant/restaurant.schema'
+import { User, UserRole } from '../user/schema/user.schema'
+import { CreateOrderInput } from './dto/create-order.dto'
 import { GetOrdersInput } from './dto/get-orders.dto'
+import { UpdateOrderInput } from './dto/update-order.dto'
+import { PENDING_ORDER } from './order.constants'
 import {
   OrderNotAuthorizedException,
   OrderNotFoundException,
   OrderStatusNotAuthorizedException,
 } from './order.exception'
-import { UpdateOrderInput } from './dto/update-order.dto'
+import { Order, OrderStatus } from './order.schema'
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<Order>,
     @InjectModel(Restaurant.name) private readonly restaurantModel: Model<Restaurant>,
+    @Inject(PUB_SUB) private readonly pubsub: PubSub,
   ) {}
 
   async create(customer: User, createOrderInput: CreateOrderInput): Promise<Order> {
@@ -48,7 +52,14 @@ export class OrderService {
       total: totalPrice,
     })
 
-    return await anOrder.populate<{ restaurant: Restaurant }>('restaurant', 'name address img')
+    const populatedOrder = await anOrder.populate<{ restaurant: Restaurant }>(
+      'restaurant',
+      'name address img owner',
+    )
+
+    this.pubsub.publish(PENDING_ORDER, { pendingOrders: populatedOrder })
+
+    return populatedOrder
   }
 
   public async getOrders(user: User, getOrderInput: GetOrdersInput): Promise<Order[]> {

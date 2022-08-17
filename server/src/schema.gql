@@ -91,6 +91,7 @@ type Restaurant {
 }
 
 type Order {
+  id: String!
   customer: User!
   driver: User
   restaurant: Restaurant!
@@ -201,7 +202,6 @@ type Query {
   profile(id: String!): ProfileRes!
   getOrders(getOrderInput: GetOrdersInput!): GetOrdersRes!
   getOrder(orderId: String!): GetOrderRes!
-  test(orderId: String!): Boolean!
 }
 
 input RestaurantsDto {
@@ -315,5 +315,5 @@ input UpdateOrderInput {
 }
 
 type Subscription {
-  orderSubscription(orderId: String!): String!
+  pendingOrders: Order!
 }

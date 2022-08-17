@@ -2,6 +2,7 @@
 import { Inject } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
+import mongoose from 'mongoose'
 import { PUB_SUB } from 'src/shared/common.constants'
 import { AuthUser } from '../auth/auth-user.decorator'
 import { Role } from '../auth/role.decorator'
@@ -11,6 +12,7 @@ import { CreateOrderInput, CreateOrderRes } from './dto/create-order.dto'
 import { GetOrderRes } from './dto/get-order.dto'
 import { GetOrdersInput, GetOrdersRes } from './dto/get-orders.dto'
 import { UpdateOrderInput, UpdateOrderRes } from './dto/update-order.dto'
+import { PENDING_ORDER } from './order.constants'
 import { Order } from './order.schema'
 import { OrderService } from './order.service'
 
@@ -59,26 +61,15 @@ export class OrderResolver {
     return Response.create(true, null, updatedOrder)
   }
 
-  @Role('any')
-  @Subscription((returns) => String, {
-    filter: (payload, variables) => {
-      console.log(payload)
-
-      return variables.orderId === payload.orderId
-    },
-    resolve: (payload, args, context, info) => {
-      return `Your order ${payload.orderId} has been updated`
+  @Role('owner')
+  @Subscription((returns) => Order, {
+    filter: (payload, _, context) => {
+      const userId: mongoose.Types.ObjectId = context.user._id
+      const ownerId: mongoose.Types.ObjectId = payload.pendingOrders.restaurant.owner
+      return userId.equals('1')
     },
   })
-  public async orderSubscription(@Args('orderId') orderId: string) {
-    return this.pubsub.asyncIterator('hello')
-  }
-
-  @Query((returns) => Boolean)
-  public test(@Args('orderId') orderId: string) {
-    this.pubsub.publish('hello', {
-      orderId,
-    })
-    return true
+  pendingOrders() {
+    return this.pubsub.asyncIterator(PENDING_ORDER)
   }
 }
