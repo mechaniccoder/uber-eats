@@ -3,6 +3,7 @@ import { Inject } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
 import mongoose from 'mongoose'
+import { Restaurant } from 'src/restaurant/restaurant.schema'
 import { PUB_SUB } from 'src/shared/common.constants'
 import { AuthUser } from '../auth/auth-user.decorator'
 import { Role } from '../auth/role.decorator'
@@ -86,10 +87,34 @@ export class OrderResolver {
 
   @Role('any')
   @Subscription((returns) => Order, {
-    filter: (payload, variables: OrderupdatedInput) => {
+    filter: (
+      payload: {
+        orderUpdated: Omit<Order, 'restaurant' | 'customer' | 'driver'> & {
+          restaurant: Restaurant
+          customer: User
+          driver: User
+        }
+      },
+      variables: OrderupdatedInput,
+      { user }: { user: User },
+    ) => {
       const { orderId: subscribedOrderId } = variables
-      const { id: updatedOrderId } = payload.orderUpdated
+      const updatedOrder = payload.orderUpdated
+      const { id: updatedOrderId, customer, driver, restaurant } = updatedOrder
+
+      if (!isUserRelativeToUpdatedOrder()) {
+        return false
+      }
+
       return updatedOrderId === subscribedOrderId
+
+      function isUserRelativeToUpdatedOrder() {
+        return !(
+          customer.id !== user.id &&
+          driver.id !== user.id &&
+          restaurant.owner.equals(user.id)
+        )
+      }
     },
   })
   orderUpdated(@Args('orderId') orderId: string) {
