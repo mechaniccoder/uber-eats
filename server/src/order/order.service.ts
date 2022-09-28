@@ -11,13 +11,15 @@ import { User, UserRole } from '../user/schema/user.schema'
 import { CreateOrderInput } from './dto/create-order.dto'
 import { GetOrdersInput } from './dto/get-orders.dto'
 import { UpdateOrderInput } from './dto/update-order.dto'
-import { COOKED_ORDER, ORDER_UPDATED, PENDING_ORDER } from './order.constants'
+import { COOKED_ORDER, ORDER_UPDATED, PENDING_ORDER, PICKEDUP_ORDER } from './order.constants'
 import {
+  OrderAlreadyTakenException,
   OrderNotAuthorizedException,
   OrderNotFoundException,
   OrderStatusNotAuthorizedException,
 } from './order.exception'
 import { Order, OrderStatus } from './order.schema'
+import { TakeOrderInput } from './dto/take-order.dto'
 
 @Injectable()
 export class OrderService {
@@ -68,15 +70,24 @@ export class OrderService {
 
     let orders: Order[] = []
     if (role === UserRole.customer) {
-      orders = await this.orderModel.find({ ...(status && { status }), customer: user._id })
+      orders = await this.orderModel
+        .find({ ...(status && { status }), customer: user._id })
+        .populate('restaurant')
     } else if (role === UserRole.owner) {
-      const restaurants = await this.restaurantModel.find({ owner: user._id })
-      orders = await this.orderModel.find({ ...(status && { status }) }).in(
-        'restaurant',
-        restaurants.map((restaurant) => restaurant._id),
-      )
+      const restaurants = await this.restaurantModel
+        .find({ owner: user._id })
+        .populate('restaurant')
+      orders = await this.orderModel
+        .find({ ...(status && { status }) })
+        .in(
+          'restaurant',
+          restaurants.map((restaurant) => restaurant._id),
+        )
+        .populate('restaurant')
     } else {
-      orders = await this.orderModel.find({ ...(status && { status }), driver: user._id })
+      orders = await this.orderModel
+        .find({ ...(status && { status }), driver: user._id })
+        .populate('restaurant')
     }
 
     return orders
@@ -204,5 +215,30 @@ export class OrderService {
         status === OrderStatus.Cooking
       )
     }
+  }
+
+  async takeOrder(driver: User, takeOrderInput: TakeOrderInput) {
+    const { id: orderId } = takeOrderInput
+
+    const order = await this.orderModel.findById(orderId)
+
+    if (!order) {
+      throw new OrderNotFoundException()
+    }
+
+    if (order.driver) {
+      throw new OrderAlreadyTakenException(order.driver.toString())
+    }
+
+    order.driver = driver._id
+    order.status = OrderStatus.PickedUp
+    await order.populate('restaurant')
+    const updatedOrder = await order.save()
+
+    await this.pubsub.publish(ORDER_UPDATED, {
+      orderUpdated: updatedOrder,
+    })
+
+    return updatedOrder
   }
 }

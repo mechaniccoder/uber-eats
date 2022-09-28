@@ -1,3 +1,4 @@
 export const PENDING_ORDER = 'PENDING_ORDER'
 export const COOKED_ORDER = 'COOKED_ORDER'
 export const ORDER_UPDATED = 'ORDER_UPDATED'
+export const PICKEDUP_ORDER = 'PICKEDUP_ORDER'

@@ -17,6 +17,7 @@ import { UpdateOrderInput, UpdateOrderRes } from './dto/update-order.dto'
 import { COOKED_ORDER, ORDER_UPDATED, PENDING_ORDER } from './order.constants'
 import { Order } from './order.schema'
 import { OrderService } from './order.service'
+import { TakeOrderInput, TakeOrderRes } from './dto/take-order.dto'
 
 @Resolver((of) => Order)
 export class OrderResolver {
@@ -119,5 +120,14 @@ export class OrderResolver {
   })
   orderUpdated(@Args('orderId') orderId: string) {
     return this.pubsub.asyncIterator(ORDER_UPDATED)
+  }
+
+  @Mutation((returns) => TakeOrderRes)
+  async takeOrder(
+    @AuthUser() driver: User,
+    @Args('takeOrderInput') takeOrderInput: TakeOrderInput,
+  ) {
+    const takenOrder = await this.orderService.takeOrder(driver, takeOrderInput)
+    return Response.create(true, null, takenOrder)
   }
 }

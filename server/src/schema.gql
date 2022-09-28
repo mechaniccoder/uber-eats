@@ -132,6 +132,12 @@ type UpdateOrderRes {
   data: Order
 }
 
+type TakeOrderRes {
+  ok: Boolean!
+  error: String
+  data: Order
+}
+
 type CreateRestaurantRes {
   ok: Boolean!
   error: String
@@ -249,6 +255,7 @@ type Mutation {
   verifyCode(verifyCodeArgs: VerifyCodeDto!): VerifyCodRes!
   createOrder(createOrderInput: CreateOrderInput!): CreateOrderRes!
   updateOrder(updateOrderInput: UpdateOrderInput!): UpdateOrderRes!
+  takeOrder(takeOrderInput: TakeOrderInput!): TakeOrderRes!
 }
 
 input CreateRestaurantDto {
@@ -311,6 +318,10 @@ input CreateOrderInput {
 
 input UpdateOrderInput {
   status: OrderStatus!
+  id: String!
+}
+
+input TakeOrderInput {
   id: String!
 }
 

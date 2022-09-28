@@ -19,3 +19,9 @@ export class OrderStatusNotAuthorizedException extends HttpException {
     super(`Order status "${status}" cannot be changed by "${user.role}"`, HttpStatus.FORBIDDEN)
   }
 }
+
+export class OrderAlreadyTakenException extends HttpException {
+  constructor(driverId: string) {
+    super(`Order already taken by other driver "${driverId}"`, HttpStatus.FORBIDDEN)
+  }
+}
