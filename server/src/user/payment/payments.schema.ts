@@ -1,7 +1,8 @@
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, InputType, ObjectType } from '@nestjs/graphql'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
 
+@InputType('PaymentInput', { isAbstract: true })
 @ObjectType()
 @Schema()
 export class Payment {

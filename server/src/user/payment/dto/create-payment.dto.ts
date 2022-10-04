@@ -1,4 +1,4 @@
-import { Field, InputType, PickType } from '@nestjs/graphql'
+import { Field, InputType, ObjectType, PickType } from '@nestjs/graphql'
 import { ResponseDto } from 'src/shared/dto/response.dto'
 import { User } from 'src/user/schema/user.schema'
 import { Payment } from '../payments.schema'
@@ -10,6 +10,7 @@ export class CreatePaymentInput extends PickType(
   InputType,
 ) {}
 
+@ObjectType()
 export class CreatePaymentRes extends ResponseDto {
   @Field((type) => User, { nullable: true })
   data?: User

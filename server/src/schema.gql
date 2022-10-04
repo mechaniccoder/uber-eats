@@ -7,12 +7,18 @@ type Verification {
   isVerified: Boolean!
 }
 
+type Payment {
+  transactionId: String!
+  restaurantId: String!
+}
+
 type User {
   id: String!
   email: String!
   password: String!
   role: UserRole!
   verification: Verification!
+  payments: [Payment!]!
 }
 
 enum UserRole {
@@ -26,6 +32,7 @@ type UserWithoutPassword {
   email: String!
   role: UserRole!
   verification: Verification!
+  payments: [Payment!]!
 }
 
 type CreateUserRes {
@@ -88,6 +95,12 @@ type Restaurant {
   category: Category!
   owner: User!
   dishes: [Dish!]!
+}
+
+type CreatePaymentRes {
+  ok: Boolean!
+  error: String
+  data: User
 }
 
 type Order {
@@ -253,6 +266,7 @@ type Mutation {
   login(loginArgs: LoginDto!): LoginRes!
   updateProfile(updateProfileArgs: UpdateProfileDto!): UpdateProfileRes!
   verifyCode(verifyCodeArgs: VerifyCodeDto!): VerifyCodRes!
+  createPayment(createPaymentInput: CreatePaymentInput!): CreatePaymentRes!
   createOrder(createOrderInput: CreateOrderInput!): CreateOrderRes!
   updateOrder(updateOrderInput: UpdateOrderInput!): UpdateOrderRes!
   takeOrder(takeOrderInput: TakeOrderInput!): TakeOrderRes!
@@ -309,6 +323,11 @@ input UpdateProfileDto {
 
 input VerifyCodeDto {
   code: String!
+}
+
+input CreatePaymentInput {
+  transactionId: String!
+  restaurantId: String!
 }
 
 input CreateOrderInput {
