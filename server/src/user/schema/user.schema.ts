@@ -65,11 +65,11 @@ export class User {
   })
   verification: VerificationDocument
 
+  @Field((type) => [Payment])
   @Prop({
-    type: paymentSchema,
-    default: () => ({})
+    type: [paymentSchema],
   })
-  payment: Payment
+  payments: Payment[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

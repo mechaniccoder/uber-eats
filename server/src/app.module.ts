@@ -17,7 +17,6 @@ import { DishModule } from './restaurant/dish/dish.module'
 import { CommonModule } from './shared/common.module'
 import { ExceptionFilter } from './shared/filter/exception.filter'
 import { UserModule } from './user/user.module'
-import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -71,7 +70,6 @@ import { PaymentsModule } from './payments/payments.module';
     }),
     OrderModule,
     CommonModule,
-    PaymentsModule,
   ],
   controllers: [],
   providers: [
