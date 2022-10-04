@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt'
 import { IsEnum } from 'class-validator'
 import { BadGatewayException } from '@nestjs/common'
 import { Verification, VerificationDocument, VerificationSchema } from './verification.schema'
+import { Payment, paymentSchema } from '../payment/payments.schema'
 
 export enum UserRole {
   customer = 'customer',
@@ -63,6 +64,12 @@ export class User {
     default: () => ({}),
   })
   verification: VerificationDocument
+
+  @Prop({
+    type: paymentSchema,
+    default: () => ({})
+  })
+  payment: Payment
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
