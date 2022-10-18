@@ -103,6 +103,12 @@ type CreatePaymentRes {
   data: User
 }
 
+type GetPaymentsRes {
+  ok: Boolean!
+  error: String
+  data: [Payment!]!
+}
+
 type Order {
   id: String!
   customer: User!
@@ -219,6 +225,7 @@ type Query {
   category(categoryArgs: CategoryDto!): CategoryRes!
   me: MeRes!
   profile(id: String!): ProfileRes!
+  getPayments: GetPaymentsRes!
   getOrders(getOrderInput: GetOrdersInput!): GetOrdersRes!
   getOrder(orderId: String!): GetOrderRes!
 }

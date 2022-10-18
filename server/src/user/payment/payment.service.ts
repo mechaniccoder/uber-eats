@@ -7,6 +7,7 @@ import {
 import { Restaurant, RestaurantModel } from 'src/restaurant/restaurant.schema'
 import { User, UserModel } from '../schema/user.schema'
 import { CreatePaymentInput } from './dto/create-payment.dto'
+import { Payment } from './payments.schema'
 
 @Injectable()
 export class PaymentService {
@@ -26,8 +27,14 @@ export class PaymentService {
       throw new RestaurantAuthorizedException()
     }
 
-    const ownerDoc = await this.userModel.findByIdAndUpdate(owner._id)
-    ownerDoc.payments.push({ transactionId, restaurantId })
-    return await ownerDoc.save()
+    const ownerDoc = await this.userModel.findByIdAndUpdate(owner._id, {
+      $push: { payments: { transactionId, restaurantId } },
+    })
+
+    return ownerDoc
+  }
+
+  getPayments(owner: User): Payment[] {
+    return owner.payments
   }
 }

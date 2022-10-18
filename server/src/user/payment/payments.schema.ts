@@ -4,7 +4,9 @@ import { Types } from 'mongoose'
 
 @InputType('PaymentInput', { isAbstract: true })
 @ObjectType()
-@Schema()
+@Schema({
+  _id: false,
+})
 export class Payment {
   @Field((type) => String)
   @Prop({
