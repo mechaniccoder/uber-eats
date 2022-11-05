@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { SchedulerRegistry } from '@nestjs/schedule'
+import { Interval, SchedulerRegistry } from '@nestjs/schedule'
 import {
   RestaurantAuthorizedException,
   RestaurantNotFoundException,
@@ -44,5 +44,20 @@ export class PaymentService {
 
   getPayments(owner: User): Payment[] {
     return owner.payments
+  }
+
+  @Interval(2000)
+  async checkPromotedRestaurants() {
+    await this.restaurantModel.updateMany(
+      {
+        isPromoted: true,
+        promotedUntil: { $lt: new Date('2022-12-01') },
+      },
+      {
+        isPromoted: false,
+        promotedUntil: null,
+      },
+      { new: true },
+    )
   }
 }
