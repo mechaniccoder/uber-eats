@@ -56,6 +56,20 @@ export class Restaurant {
     type: [DishSchema],
   })
   dishes: Types.DocumentArray<Dish>
+
+  @Field((type) => Boolean)
+  @Prop({
+    type: Boolean,
+    required: true,
+    default: false,
+  })
+  isPromoted: boolean
+
+  @Field((type) => Date, { nullable: true })
+  @Prop({
+    type: Date,
+  })
+  promotedUntil?: Date
 }
 
 export const RestaurantSchema = SchemaFactory.createForClass(Restaurant)

@@ -90,8 +90,11 @@ export class RestaurantService {
   }
 
   async find(restaurantsDto: RestaurantsDto): Promise<Restaurant[]> {
+    console.log(restaurantsDto)
+
     const restaurants = await this.restaurantModel
       .find(restaurantsDto)
+      .sort({ isPromoted: -1 })
       .populate(['category', 'owner'])
 
     return restaurants

@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config'
 import { APP_FILTER, APP_GUARD } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
 import { MongooseModule } from '@nestjs/mongoose'
+import { ScheduleModule } from '@nestjs/schedule'
 import * as Joi from 'joi'
 import { join } from 'path'
 import { AuthGuard } from './auth/auth.guard'
@@ -70,6 +71,7 @@ import { UserModule } from './user/user.module'
     }),
     OrderModule,
     CommonModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [],
   providers: [

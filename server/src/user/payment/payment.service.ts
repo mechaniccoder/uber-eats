@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
+import { SchedulerRegistry } from '@nestjs/schedule'
 import {
   RestaurantAuthorizedException,
   RestaurantNotFoundException,
@@ -14,6 +15,7 @@ export class PaymentService {
   constructor(
     @InjectModel(User.name) private readonly userModel: UserModel,
     @InjectModel(Restaurant.name) private readonly restaurantModel: RestaurantModel,
+    private readonly scheduleResgistry: SchedulerRegistry,
   ) {}
 
   async createPayment(owner: User, createPaymentInput: CreatePaymentInput) {
@@ -30,6 +32,12 @@ export class PaymentService {
     const ownerDoc = await this.userModel.findByIdAndUpdate(owner._id, {
       $push: { payments: { transactionId, restaurantId } },
     })
+
+    restaurant.isPromoted = true
+    const date = new Date()
+    date.setDate(date.getDate() + 7)
+    restaurant.promotedUntil = date
+    await restaurant.save()
 
     return ownerDoc
   }

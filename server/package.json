@@ -28,6 +28,7 @@
     "@nestjs/graphql": "^10.0.6",
     "@nestjs/mongoose": "^9.0.2",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/schedule": "^2.1.0",
     "apollo-server-core": "^3.6.4",
     "apollo-server-express": "^3.6.4",
     "bcrypt": "^5.0.1",
