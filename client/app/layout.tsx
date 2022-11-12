@@ -5,7 +5,19 @@ import './globals.css'
 
 const client = new ApolloClient({
   uri: 'http://localhost:3000/',
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          isLoggedIn: {
+            read: () => {
+              return localStorage.getItem('accessToken')
+            },
+          },
+        },
+      },
+    },
+  }),
 })
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
