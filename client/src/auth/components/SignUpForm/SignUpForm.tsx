@@ -1,5 +1,3 @@
-'use client'
-
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 type SignUpFields = {
@@ -7,27 +5,16 @@ type SignUpFields = {
   password: string
 }
 
-export default function SignInPage() {
-  const handleSubmit: SubmitHandler<SignUpFields> = (data) => {
-    console.log(data)
-  }
-
-  return (
-    <div className="justify-cent items-center bg-gray-800">
-      <section className="flex max-w-[360px] flex-col gap-3 px-3">
-        <h1 className="text-2xl text-white">Sign up</h1>
-        <SignUpForm onSubmit={handleSubmit} />
-      </section>
-    </div>
-  )
-}
-
 type SignUpFormProps = {
-  onSubmit: SubmitHandler<SignUpFields>
+  onSignUp: SubmitHandler<SignUpFields>
 }
-const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
-  const { register, formState, handleSubmit, getFieldState } = useForm<SignUpFields>()
+export const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp }) => {
+  const { register, formState, handleSubmit } = useForm<SignUpFields>()
   const { errors } = formState
+
+  const onSubmit: SubmitHandler<SignUpFields> = (data) => {
+    onSignUp(data)
+  }
 
   return (
     <div className="mx-auto flex  flex-col gap-2 rounded-lg border border-transparent bg-white p-6 transition-transform focus-within:scale-105">
@@ -40,13 +27,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                 message: 'Invalid email address',
-              },
-              validate: {
-                checkEmail: async (value) => {
-                  await new Promise((res) => setTimeout(res, 2000))
-                  console.log(value)
-                  return value === 'test@gmail.com' || 'Email is already taken'
-                },
               },
             })}
             className="min-h-[3rem] rounded-lg bg-gray-200 px-3 py-[0.625rem] focus:outline-none focus:ring-2"
