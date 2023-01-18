@@ -28,13 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <head /> will contain the components returned by the nearest parent
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
-        <head />
-        <body>
-          <header className="h-0 min-h-full min-w-0 space-x-3 bg-red-200 hover:space-x-0 focus:w-0"></header>
-          <div>
-            hello hihi hioioeajfioefjiojesfio jaiosfjieaso<span>hello</span>
-          </div>
-          {children}
+        <body className="flex flex-col">
+          <header></header>
+          <main className="flex flex-1 items-center justify-center bg-gray-800">{children}</main>
         </body>
       </html>
     </ApolloProvider>
