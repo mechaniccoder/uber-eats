@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(4000)
   const logger = new Logger(bootstrap.name)
-  logger.debug('Server running on 3000 port')
+  logger.debug('Server running on 4000 port')
 
   if (module.hot) {
     module.hot.accept()
