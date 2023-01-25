@@ -1,8 +1,10 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { SignUpForm } from './SignUpForm'
 
 describe('SignUpForm', () => {
+  const testEmail = 'test@gmail.com'
+  const testPassword = 'testPassword'
   it('should call onSubmit', async () => {
     const user = userEvent.setup()
 
@@ -12,9 +14,6 @@ describe('SignUpForm', () => {
     const emailInput = getByRole('textbox', { name: 'Enter your email' })
     const passwordInput = getByPlaceholderText(/enter your password/i)
     const submitButton = getByRole('button', { name: /Continue/i })
-
-    const testEmail = 'test@gmail.com'
-    const testPassword = 'testPassword'
 
     await user.type(emailInput, testEmail)
     await user.type(passwordInput, testPassword)
@@ -27,17 +26,35 @@ describe('SignUpForm', () => {
     })
   })
 
-  it('should render required error message', () => {
-    const handleSignUp = jest.fn()
-    const { getByRole } = render(<SignUpForm onSignUp={handleSignUp} />)
+  it('should render required error message', async () => {
+    const user = userEvent.setup()
 
-    const emailInput = getByRole('textbox', { name: 'Enter your email' })
-    const passwordInput = getByRole('textbox', { name: 'Enter your password' })
-    const submitButton = getByRole('button', { name: /Continue/i })
+    const handleSignUp = jest.fn()
+    render(<SignUpForm onSignUp={handleSignUp} />)
+
+    const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
+    const submitButton = screen.getByRole('button', { name: /Continue/i })
 
     expect(emailInput).toBeInTheDocument()
 
-    userEvent.click(submitButton)
+    await user.click(submitButton)
+
+    expect(await screen.findByTestId('email-error-message')).toBeInTheDocument()
+  })
+
+  it('should render password error message', async () => {
+    const user = userEvent.setup()
+
+    const handleSignUp = jest.fn()
+    render(<SignUpForm onSignUp={handleSignUp} />)
+
+    const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
+    const submitButton = screen.getByRole('button', { name: /Continue/i })
+
+    await user.type(emailInput, testEmail)
+    await user.click(submitButton)
+
+    expect(await screen.findByTestId('password-error-message')).toBeInTheDocument()
   })
 })
 export {}

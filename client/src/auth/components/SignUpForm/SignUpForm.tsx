@@ -41,7 +41,12 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp }) => {
             aria-invalid={errors.email ? 'true' : 'false'}
           />
           {errors.email && (
-            <p className="text-red-500" role="alert">
+            <p
+              className="text-red-500"
+              role="alert"
+              data-testid="email-error-message"
+              aria-invalid={!!errors.email}
+            >
               {errors.email.message}
             </p>
           )}
@@ -66,7 +71,12 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp }) => {
             aria-invalid={errors.password ? 'true' : 'false'}
           />
           {errors.password && (
-            <p role="alert" className="text-red-500">
+            <p
+              role="alert"
+              className="text-red-500"
+              data-testid="password-error-message"
+              aria-invalid={!!errors.password}
+            >
               {errors.password.message}
             </p>
           )}
