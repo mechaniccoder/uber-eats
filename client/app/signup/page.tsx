@@ -1,7 +1,18 @@
 'use client'
 
+import { gql, useMutation } from '@apollo/client'
 import { SubmitHandler } from 'react-hook-form'
 import { SignUpForm } from '../../src/auth/components'
+
+const SIGN_UP = gql`
+  mutation SignUp($email: String!, $password: String!, $role: UserRole!) {
+    createUser(createUserArgs: { email: $email, password: $password, role: $role }}) {
+      ok
+      error
+      data
+    }
+  }
+`
 
 type SignUpFields = {
   email: string
@@ -9,8 +20,18 @@ type SignUpFields = {
 }
 
 export default function SignInPage() {
+  const [signUp, { data, loading, error }] = useMutation(SIGN_UP)
+
   const handleSubmit: SubmitHandler<SignUpFields> = (data) => {
-    console.log(data)
+    const { email, password } = data
+
+    signUp({
+      variables: {
+        email,
+        password,
+        role: 'customer',
+      },
+    })
   }
 
   return (
