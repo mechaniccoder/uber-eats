@@ -27,20 +27,23 @@ export class UserService {
 
     const newUser = await this.userModel.create(createUserDto)
 
-    await this.mailService.sendMail(
-      `Verification code is ${newUser.verification.code}`,
-      'verification',
-      [
-        {
-          name: 'code',
-          value: newUser.verification.code,
-        },
-        {
-          name: 'username',
-          value: newUser.email,
-        },
-      ],
-    )
+    /**
+     * @todo fix this by correcting environment variables
+     */
+    // await this.mailService.sendMail(
+    //   `Verification code is ${newUser.verification.code}`,
+    //   'verification',
+    //   [
+    //     {
+    //       name: 'code',
+    //       value: newUser.verification.code,
+    //     },
+    //     {
+    //       name: 'username',
+    //       value: newUser.email,
+    //     },
+    //   ],
+    // )
   }
 
   async update(

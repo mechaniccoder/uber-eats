@@ -2,6 +2,7 @@
 
 import { useMutation } from '@apollo/client'
 import { gql } from 'gql'
+import { UserRole } from 'gql/graphql'
 import { SubmitHandler } from 'react-hook-form'
 import { SignUpForm } from '../../src/auth/components'
 
@@ -34,6 +35,7 @@ export default function SignInPage() {
       variables: {
         email,
         password,
+        role: UserRole.Customer,
       },
     })
   }
