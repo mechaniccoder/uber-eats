@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  query Login {\n    me {\n      ok\n      error\n      data {\n        email\n      }\n    }\n  }\n": types.LoginDocument,
-    "\n  mutation SignUp($email: String!, $password: String!, $role: UserRole!) {\n    createUser(createUserArgs: { email: $email, password: $password, role: $role }) {\n      ok\n      error\n      data {\n        id\n        email\n        role\n      }\n    }\n  }\n": types.SignUpDocument,
+    "\n  mutation CreateUser($email: String!, $password: String!, $role: UserRole!) {\n    createUser(createUserArgs: { email: $email, password: $password, role: $role }) {\n      ok\n      error\n      data {\n        id\n        email\n        role\n      }\n    }\n  }\n": types.CreateUserDocument,
 };
 
 /**
@@ -38,7 +38,7 @@ export function gql(source: "\n  query Login {\n    me {\n      ok\n      error\
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation SignUp($email: String!, $password: String!, $role: UserRole!) {\n    createUser(createUserArgs: { email: $email, password: $password, role: $role }) {\n      ok\n      error\n      data {\n        id\n        email\n        role\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation SignUp($email: String!, $password: String!, $role: UserRole!) {\n    createUser(createUserArgs: { email: $email, password: $password, role: $role }) {\n      ok\n      error\n      data {\n        id\n        email\n        role\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation CreateUser($email: String!, $password: String!, $role: UserRole!) {\n    createUser(createUserArgs: { email: $email, password: $password, role: $role }) {\n      ok\n      error\n      data {\n        id\n        email\n        role\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateUser($email: String!, $password: String!, $role: UserRole!) {\n    createUser(createUserArgs: { email: $email, password: $password, role: $role }) {\n      ok\n      error\n      data {\n        id\n        email\n        role\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

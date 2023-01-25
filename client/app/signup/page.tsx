@@ -5,8 +5,8 @@ import { gql } from 'gql'
 import { SubmitHandler } from 'react-hook-form'
 import { SignUpForm } from '../../src/auth/components'
 
-const SIGN_UP = gql(/* GraphQL */ `
-  mutation SignUp($email: String!, $password: String!, $role: UserRole!) {
+const CREATE_USER = gql(/* GraphQL */ `
+  mutation CreateUser($email: String!, $password: String!, $role: UserRole!) {
     createUser(createUserArgs: { email: $email, password: $password, role: $role }) {
       ok
       error
@@ -25,7 +25,7 @@ type SignUpFields = {
 }
 
 export default function SignInPage() {
-  const [signUp] = useMutation(SIGN_UP)
+  const [signUp, { data }] = useMutation(CREATE_USER)
 
   const handleSubmit: SubmitHandler<SignUpFields> = (data) => {
     const { email, password } = data
@@ -34,10 +34,6 @@ export default function SignInPage() {
       variables: {
         email,
         password,
-        role: 'customer',
-      },
-      onCompleted: (data) => {
-        console.log(data)
       },
     })
   }
