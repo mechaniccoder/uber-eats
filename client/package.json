@@ -6,8 +6,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "gql:compile": "graphql-codegen",
+    "gql:watch": "graphql-codegen -w"
   },
   "dependencies": {
     "@apollo/client": "^3.7.1",
