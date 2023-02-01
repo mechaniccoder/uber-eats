@@ -1,3 +1,6 @@
+import { CREATE_USER } from '@/auth/gql'
+import { CreateUserMutation, CreateUserMutationVariables, UserRole } from '@/gql/graphql'
+import { useMutation } from '@apollo/client'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 type SignUpFields = {
@@ -6,18 +9,43 @@ type SignUpFields = {
 }
 
 type SignUpFormProps = {
-  onSignUp: SubmitHandler<SignUpFields>
+  onSignUp: () => void
 }
 export const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp }) => {
   const { register, formState, handleSubmit } = useForm<SignUpFields>()
   const { errors } = formState
 
+  const [signUp, { data: createUserRes, loading: signUpLoading }] = useMutation<
+    CreateUserMutation,
+    CreateUserMutationVariables
+  >(CREATE_USER, {
+    onCompleted: ({ createUser }) => {
+      const { ok, error } = createUser
+
+      if (ok) {
+        onSignUp()
+      } else {
+        // @todo handle error
+      }
+    },
+  })
+
   const onSubmit: SubmitHandler<SignUpFields> = (data) => {
-    onSignUp(data)
+    const { email, password } = data
+
+    signUp({
+      variables: {
+        createUserDto: {
+          email: email,
+          password,
+          role: UserRole.Customer,
+        },
+      },
+    })
   }
 
   return (
-    <div className="mx-auto flex  flex-col gap-2 rounded-lg border border-transparent bg-white p-6 transition-transform focus-within:scale-105">
+    <div className="mx-auto flex  flex-col gap-2 rounded-lg border border-transparent bg-white p-6">
       <h1>전화번호나 이메일이 어떻게 되시나요?</h1>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col">
@@ -86,8 +114,11 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp }) => {
           type="submit"
           className="btn-primary bg-black text-white ring-sky-400 focus:outline-none focus:ring-2"
         >
-          Continue
+          {signUpLoading ? 'Loading...' : 'Continue'}
         </button>
+        {createUserRes?.createUser.error === 'ExistException' && (
+          <p className="text-red-500">User already exist</p>
+        )}
       </form>
     </div>
   )
