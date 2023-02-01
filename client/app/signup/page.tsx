@@ -2,13 +2,14 @@
 
 import { useMutation } from '@apollo/client'
 import { gql } from 'gql'
-import { UserRole } from 'gql/graphql'
+import { CreateUserMutation, CreateUserMutationVariables, UserRole } from 'gql/graphql'
+import { useRouter } from 'next/navigation'
 import { SubmitHandler } from 'react-hook-form'
 import { SignUpForm } from '../../src/auth/components'
 
 const CREATE_USER = gql(/* GraphQL */ `
-  mutation CreateUser($email: String!, $password: String!, $role: UserRole!) {
-    createUser(createUserArgs: { email: $email, password: $password, role: $role }) {
+  mutation CreateUser($createUserDto: CreateUserDto!) {
+    createUser(createUserArgs: $createUserDto) {
       ok
       error
       data {
@@ -26,16 +27,33 @@ type SignUpFields = {
 }
 
 export default function SignInPage() {
-  const [signUp, { data }] = useMutation(CREATE_USER)
+  const router = useRouter()
+
+  const [signUp, { data }] = useMutation<CreateUserMutation, CreateUserMutationVariables>(
+    CREATE_USER,
+    {
+      onCompleted: ({ createUser }) => {
+        const { ok, error } = createUser
+
+        if (ok) {
+          router.push('/login')
+        } else {
+          // @todo handle error
+        }
+      },
+    },
+  )
 
   const handleSubmit: SubmitHandler<SignUpFields> = (data) => {
     const { email, password } = data
 
     signUp({
       variables: {
-        email,
-        password,
-        role: UserRole.Customer,
+        createUserDto: {
+          email,
+          password,
+          role: UserRole.Customer,
+        },
       },
     })
   }
