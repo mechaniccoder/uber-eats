@@ -21,7 +21,8 @@
     ],
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@utils/*": ["./common/utils/*"]
     }
   },
   "include": [

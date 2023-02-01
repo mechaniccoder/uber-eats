@@ -1,7 +1,8 @@
 import { handlers } from '@/common/mocks/handlers'
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-import { render, screen } from '@testing-library/react'
+import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { customRender } from '@utils/test-utils'
 import { setupServer } from 'msw/node'
 import { SignUpForm } from './SignUpForm'
 
@@ -25,9 +26,7 @@ describe('SignUpForm', () => {
       uri: 'http://localhost:4000/graphql',
       cache: new InMemoryCache(),
     })
-    const { getByRole, getByPlaceholderText } = render(<SignUpForm onSignUp={handleSignUp} />, {
-      wrapper: createWrapper(),
-    })
+    const { getByRole, getByPlaceholderText } = customRender(<SignUpForm onSignUp={handleSignUp} />)
 
     const emailInput = getByRole('textbox', { name: 'Enter your email' })
     const passwordInput = getByPlaceholderText(/enter your password/i)
@@ -45,9 +44,7 @@ describe('SignUpForm', () => {
     const user = userEvent.setup()
 
     const handleSignUp = jest.fn()
-    render(<SignUpForm onSignUp={handleSignUp} />, {
-      wrapper: createWrapper(),
-    })
+    customRender(<SignUpForm onSignUp={handleSignUp} />)
 
     const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
     const submitButton = screen.getByRole('button', { name: /Continue/i })
@@ -63,9 +60,7 @@ describe('SignUpForm', () => {
     const user = userEvent.setup()
 
     const handleSignUp = jest.fn()
-    render(<SignUpForm onSignUp={handleSignUp} />, {
-      wrapper: createWrapper(),
-    })
+    customRender(<SignUpForm onSignUp={handleSignUp} />)
 
     const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
     const submitButton = screen.getByRole('button', { name: /Continue/i })
@@ -78,26 +73,3 @@ describe('SignUpForm', () => {
 })
 
 export {}
-
-export const createWrapper = () => {
-  const client = new ApolloClient({
-    uri: 'http://localhost:4000/graphql',
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            isLoggedIn: {
-              read: () => {
-                return localStorage.getItem('accessToken')
-              },
-            },
-          },
-        },
-      },
-    }),
-  })
-
-  return ({ children }: { children: React.ReactNode }) => (
-    <ApolloProvider client={client}>{children}</ApolloProvider>
-  )
-}
