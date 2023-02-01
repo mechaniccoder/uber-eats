@@ -20,6 +20,8 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp }) => {
     CreateUserMutationVariables
   >(CREATE_USER, {
     onCompleted: ({ createUser }) => {
+      console.log(createUser)
+
       const { ok, error } = createUser
 
       if (ok) {
