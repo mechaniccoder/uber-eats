@@ -47,11 +47,15 @@
     "cosmiconfig-toml-loader": "^1.0.0",
     "jest": "^29.3.1",
     "jest-environment-jsdom": "^29.3.1",
+    "msw": "^1.0.0",
     "postcss": "^8.4.18",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
     "tailwindcss": "^3.2.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
