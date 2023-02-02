@@ -6,9 +6,8 @@ Learning fullstack development by creating uber eats service
 
 ### Frontend
 
-- React.js@18, Next.js@13, Apollo Client, TailwindCSS
+- TypeScript, React.js@18, Next.js@13, Apollo Client, TailwindCSS, Jest, Testing Library
 
 ### Backend
 
-- Nest.js, Mongoose, MongoDB, GraphQL
-
+- TypeScript, Nest.js, Mongoose, MongoDB, GraphQL
