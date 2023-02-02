@@ -1,12 +1,28 @@
 import { createUserAlreadyExistError } from '@/auth/gql/mock'
 import { handlers } from '@/common/mocks/handlers'
 import { screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { customRender } from '@utils/test-utils'
 import { setupServer } from 'msw/node'
 import { SignUpForm } from './SignUpForm'
 
 const server = setupServer(...handlers)
+
+const setup = () => {
+  const handleSignUp = jest.fn()
+
+  const utils = customRender(<SignUpForm onSignUp={handleSignUp} />)
+  const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
+  const passwordInput = screen.getByPlaceholderText(/enter your password/i)
+  const submitButton = screen.getByRole('button', { name: /Continue/i })
+
+  return {
+    emailInput,
+    passwordInput,
+    submitButton,
+    handleSignUp,
+    ...utils,
+  }
+}
 
 beforeAll(() => server.listen())
 
@@ -18,15 +34,7 @@ describe('SignUpForm', () => {
   const testEmail = 'test@gmail.com'
   const testPassword = 'testPassword'
   it('should call onSignUp', async () => {
-    const user = userEvent.setup()
-
-    const handleSignUp = jest.fn()
-
-    const { getByRole, getByPlaceholderText } = customRender(<SignUpForm onSignUp={handleSignUp} />)
-
-    const emailInput = getByRole('textbox', { name: 'Enter your email' })
-    const passwordInput = getByPlaceholderText(/enter your password/i)
-    const submitButton = getByRole('button', { name: /Continue/i })
+    const { user, emailInput, passwordInput, submitButton, handleSignUp } = setup()
 
     await user.type(emailInput, testEmail)
     await user.type(passwordInput, testPassword)
@@ -37,13 +45,7 @@ describe('SignUpForm', () => {
   })
 
   it('should render required error message', async () => {
-    const user = userEvent.setup()
-
-    const handleSignUp = jest.fn()
-    customRender(<SignUpForm onSignUp={handleSignUp} />)
-
-    const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
-    const submitButton = screen.getByRole('button', { name: /Continue/i })
+    const { user, emailInput, submitButton } = setup()
 
     expect(emailInput).toBeInTheDocument()
 
@@ -53,13 +55,7 @@ describe('SignUpForm', () => {
   })
 
   it('should render password error message', async () => {
-    const user = userEvent.setup()
-
-    const handleSignUp = jest.fn()
-    customRender(<SignUpForm onSignUp={handleSignUp} />)
-
-    const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
-    const submitButton = screen.getByRole('button', { name: /Continue/i })
+    const { user, emailInput, passwordInput, submitButton } = setup()
 
     await user.type(emailInput, testEmail)
     await user.click(submitButton)
@@ -70,11 +66,7 @@ describe('SignUpForm', () => {
   it('Loading state should be rendered on submit', async () => {
     server.use(createUserAlreadyExistError(1000))
 
-    const { user } = customRender(<SignUpForm onSignUp={jest.fn()} />)
-
-    const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
-    const passwordInput = screen.getByPlaceholderText(/enter your password/i)
-    const submitButton = screen.getByRole('button', { name: /Continue/i })
+    const { user, emailInput, passwordInput, submitButton } = setup()
 
     await user.type(emailInput, testEmail)
     await user.type(passwordInput, testPassword)
@@ -86,11 +78,7 @@ describe('SignUpForm', () => {
   it('Error message should be rendered if user already exist', async () => {
     server.use(createUserAlreadyExistError())
 
-    const { user } = customRender(<SignUpForm onSignUp={jest.fn()} />)
-
-    const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
-    const passwordInput = screen.getByPlaceholderText(/enter your password/i)
-    const submitButton = screen.getByRole('button', { name: /Continue/i })
+    const { user, emailInput, passwordInput, submitButton } = setup()
 
     await user.type(emailInput, testEmail)
     await user.type(passwordInput, testPassword)
