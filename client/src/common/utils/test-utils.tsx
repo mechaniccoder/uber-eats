@@ -1,5 +1,6 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { render, RenderOptions } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { ReactElement } from 'react'
 
 export const createWrapper = () => {
@@ -25,5 +26,8 @@ export const createWrapper = () => {
   )
 }
 
-export const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
-  render(ui, { wrapper: createWrapper(), ...options })
+export const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) => {
+  const user = userEvent.setup()
+
+  return { user, ...render(ui, { wrapper: createWrapper(), ...options }) }
+}

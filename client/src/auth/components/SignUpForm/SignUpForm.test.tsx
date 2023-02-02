@@ -1,5 +1,5 @@
+import { createUserAlreadyExistError } from '@/auth/gql/mock'
 import { handlers } from '@/common/mocks/handlers'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { customRender } from '@utils/test-utils'
@@ -22,10 +22,6 @@ describe('SignUpForm', () => {
 
     const handleSignUp = jest.fn()
 
-    const client = new ApolloClient({
-      uri: 'http://localhost:4000/graphql',
-      cache: new InMemoryCache(),
-    })
     const { getByRole, getByPlaceholderText } = customRender(<SignUpForm onSignUp={handleSignUp} />)
 
     const emailInput = getByRole('textbox', { name: 'Enter your email' })
@@ -69,6 +65,40 @@ describe('SignUpForm', () => {
     await user.click(submitButton)
 
     expect(await screen.findByTestId('password-error-message')).toBeInTheDocument()
+  })
+
+  it('Loading state should be rendered on submit', async () => {
+    server.use(createUserAlreadyExistError(1000))
+
+    const { user } = customRender(<SignUpForm onSignUp={jest.fn()} />)
+
+    const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
+    const passwordInput = screen.getByPlaceholderText(/enter your password/i)
+    const submitButton = screen.getByRole('button', { name: /Continue/i })
+
+    await user.type(emailInput, testEmail)
+    await user.type(passwordInput, testPassword)
+    await user.click(submitButton)
+
+    expect(await screen.findByText(/loading/i)).toBeInTheDocument()
+  })
+
+  it('Error message should be rendered if user already exist', async () => {
+    server.use(createUserAlreadyExistError())
+
+    const { user } = customRender(<SignUpForm onSignUp={jest.fn()} />)
+
+    const emailInput = screen.getByRole('textbox', { name: 'Enter your email' })
+    const passwordInput = screen.getByPlaceholderText(/enter your password/i)
+    const submitButton = screen.getByRole('button', { name: /Continue/i })
+
+    await user.type(emailInput, testEmail)
+    await user.type(passwordInput, testPassword)
+    await user.click(submitButton)
+
+    const userAlreadyExistErrorMessage = await screen.findByText(/user already exist/i)
+
+    expect(userAlreadyExistErrorMessage).toBeInTheDocument()
   })
 })
 
