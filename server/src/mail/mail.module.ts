@@ -1,9 +1,8 @@
 import { DynamicModule, Module } from '@nestjs/common'
-import { MAIL_CONFIG_OPTIONS, MAILGUN } from './mail.constant'
+import Mailgun from 'mailgun-js'
 import { MailModuleOptions } from './interface/mail-module-options'
+import { MAILGUN, MAIL_CONFIG_OPTIONS } from './mail.constant'
 import { MailService } from './mail.service'
-import Mailgun from 'mailgun.js'
-import formData from 'form-data'
 
 @Module({})
 export class MailModule {
@@ -19,8 +18,10 @@ export class MailModule {
         {
           provide: MAILGUN,
           useFactory: () => {
-            const mailgun = new Mailgun(formData)
-            return mailgun.client({ username: options.from, key: options.apiKey })
+            return Mailgun({
+              apiKey: options.apiKey,
+              domain: options.domain,
+            })
           },
         },
         MailService,

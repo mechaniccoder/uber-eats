@@ -30,20 +30,10 @@ export class UserService {
     /**
      * @todo fix this by correcting environment variables
      */
-    // await this.mailService.sendMail(
-    //   `Verification code is ${newUser.verification.code}`,
-    //   'verification',
-    //   [
-    //     {
-    //       name: 'code',
-    //       value: newUser.verification.code,
-    //     },
-    //     {
-    //       name: 'username',
-    //       value: newUser.email,
-    //     },
-    //   ],
-    // )
+    await this.mailService.sendMail(
+      `Verification code is ${newUser.verification.code}`,
+      `Your verification code is  ${newUser.verification.code}`,
+    )
   }
 
   async update(
