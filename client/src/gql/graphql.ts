@@ -512,6 +512,7 @@ export type VerifyCodRes = {
 
 export type VerifyCodeDto = {
   code: Scalars['String'];
+  email: Scalars['String'];
 };
 
 export type LoginQueryVariables = Exact<{ [key: string]: never; }>;

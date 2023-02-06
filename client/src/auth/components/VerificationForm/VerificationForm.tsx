@@ -5,19 +5,31 @@ import { useState } from 'react'
 
 const VERIFICATION_CODE_LENGTH = 6
 
-export const VerificationForm: React.FC = () => {
+type Props = {
+  email: string
+  onVerify: () => void
+}
+export const VerificationForm: React.FC<Props> = ({ email, onVerify }) => {
   const [verificationCode, setVerificationCode] = useState<string[]>([])
 
   const [verifyCode, { loading, error, data: verifyCodeData }] = useMutation<
     VerifyCodeMutation,
     VerifyCodeMutationVariables
-  >(VERIFY_CODE)
+  >(VERIFY_CODE, {
+    onCompleted: ({ verifyCode }) => {
+      const { ok, data } = verifyCode
+      if (ok) {
+        onVerify()
+      }
+    },
+  })
 
   const handleComplete = (value: string) => {
     verifyCode({
       variables: {
         verifyCodeDto: {
           code: value,
+          email,
         },
       },
     })

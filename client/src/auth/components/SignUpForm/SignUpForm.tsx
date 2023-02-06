@@ -9,10 +9,10 @@ type SignUpFields = {
 }
 
 type SignUpFormProps = {
-  onSignUp: () => void
+  onSignUp: ({ email }: Pick<SignUpFields, 'email'>) => void
 }
 export const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp }) => {
-  const { register, formState, handleSubmit } = useForm<SignUpFields>()
+  const { register, formState, handleSubmit, getValues } = useForm<SignUpFields>()
   const { errors } = formState
 
   const [signUp, { data: createUserRes, loading: signUpLoading }] = useMutation<
@@ -20,10 +20,13 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp }) => {
     CreateUserMutationVariables
   >(CREATE_USER, {
     onCompleted: ({ createUser }) => {
-      const { ok, error } = createUser
+      const { ok } = createUser
 
       if (ok) {
-        onSignUp()
+        const email = getValues('email')
+        onSignUp({
+          email,
+        })
       } else {
         // @todo handle error
       }
