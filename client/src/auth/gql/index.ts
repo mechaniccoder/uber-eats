@@ -13,3 +13,13 @@ export const CREATE_USER = gql(/* GraphQL */ `
     }
   }
 `)
+
+export const VERIFY_CODE = gql(/* GraphQL */ `
+  mutation VerifyCode($verifyCodeDto: VerifyCodeDto!) {
+    verifyCode(verifyCodeArgs: $verifyCodeDto) {
+      ok
+      error
+      data
+    }
+  }
+`)
