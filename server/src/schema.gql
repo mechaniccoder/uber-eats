@@ -65,12 +65,6 @@ type UpdateProfileRes {
   data: UserWithoutPassword
 }
 
-type VerifyCodRes {
-  ok: Boolean!
-  error: String
-  data: Boolean
-}
-
 type Category {
   id: String!
   name: String!
@@ -224,6 +218,12 @@ type DeleteDishRes {
   data: [Dish!]
 }
 
+type VerifyCodRes {
+  ok: Boolean!
+  error: String
+  data: Boolean
+}
+
 type Query {
   restaurants(restaurantsArgs: RestaurantsDto): RestaurantsRes!
   getRestaurant(getRestaurantInput: GetRestaurantDto!): GetRestaurantRes!
@@ -339,6 +339,7 @@ input UpdateProfileDto {
 
 input VerifyCodeDto {
   code: String!
+  email: String!
 }
 
 input CreatePaymentInput {

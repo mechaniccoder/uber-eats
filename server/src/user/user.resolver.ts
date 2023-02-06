@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Logger, UseGuards } from '@nestjs/common'
+import { Logger } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Role } from 'src/auth/role.decorator'
 import { Response } from 'src/shared/factory/response.factory'
-import { CreateUserDto, CreateUserRes } from './dto/create-user.dto'
-import { User, UserWithoutPassword } from './schema/user.schema'
-import { UserService } from './user.service'
-import { LoginDto, LoginRes } from './dto/login.dto'
-import { AuthGuard } from '../auth/auth.guard'
 import { AuthUser } from '../auth/auth-user.decorator'
+import { CreateUserDto, CreateUserRes } from './dto/create-user.dto'
+import { LoginDto, LoginRes } from './dto/login.dto'
 import { MeRes } from './dto/me.dto'
 import { ProfileArgs, ProfileRes } from './dto/profile.dto'
 import { UpdateProfileDto, UpdateProfileRes } from './dto/update-profile.dto'
-import { VerificationService } from './verification.service'
 import { VerifyCodeDto, VerifyCodRes } from './dto/verify-code.dto'
-import { Role } from 'src/auth/role.decorator'
+import { User, UserWithoutPassword } from './schema/user.schema'
+import { UserService } from './user.service'
+import { VerificationService } from './verification.service'
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -60,11 +59,8 @@ export class UserResolver {
   }
 
   @Mutation((returns) => VerifyCodRes)
-  async verifyCode(
-    @AuthUser() user: UserWithoutPassword,
-    @Args('verifyCodeArgs') verifyCodeDto: VerifyCodeDto,
-  ): Promise<VerifyCodRes> {
-    await this.verificationService.verify(user, verifyCodeDto)
+  async verifyCode(@Args('verifyCodeArgs') verifyCodeDto: VerifyCodeDto): Promise<VerifyCodRes> {
+    await this.verificationService.verify(verifyCodeDto)
     return Response.create(true, null, null)
   }
 }
