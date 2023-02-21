@@ -2,15 +2,29 @@ import { customRender } from '@/common/utils/test-utils'
 import { screen } from '@testing-library/react'
 import { LoginForm } from './LoginForm'
 
+const setup = () => {
+  const handleLogin = jest.fn()
+  const utils = customRender(<LoginForm onLogin={handleLogin} />)
+
+  const emailInput = screen.getByTestId('email-input')
+  const passwordInput = screen.getByTestId('password-input')
+  const submitButton = screen.getByRole('button', { name: /login/i })
+
+  return {
+    emailInput,
+    passwordInput,
+    submitButton,
+    handleLogin,
+    ...utils,
+  }
+}
+
 describe('LoginForm', () => {
   const testEmail = 'test@gmail.com'
   const testPassword = 'test1234'
 
   it('when user login with wrong id, then show error message', async () => {
-    const handleLogin = jest.fn()
-    const { user } = customRender(<LoginForm onLogin={handleLogin} />)
-
-    const submitButton = screen.getByRole('button', { name: /login/i })
+    const { user, submitButton, handleLogin } = setup()
 
     await user.click(submitButton)
 
@@ -22,16 +36,10 @@ describe('LoginForm', () => {
   })
 
   it('when user login success, handle login is called', async () => {
-    const handleLogin = jest.fn()
-    const { user } = customRender(<LoginForm onLogin={handleLogin} />)
-
-    const emailInput = screen.getByTestId('email-input')
-    const passwordInput = screen.getByTestId('password-input')
+    const { user, submitButton, emailInput, passwordInput, handleLogin } = setup()
 
     await user.type(emailInput, testEmail)
     await user.type(passwordInput, testPassword)
-
-    const submitButton = screen.getByRole('button', { name: /login/i })
 
     await user.click(submitButton)
 
