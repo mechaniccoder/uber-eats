@@ -65,6 +65,12 @@ type UpdateProfileRes {
   data: UserWithoutPassword
 }
 
+type VerifyCodRes {
+  ok: Boolean!
+  error: String
+  data: Boolean
+}
+
 type Category {
   id: String!
   name: String!
@@ -216,12 +222,6 @@ type DeleteDishRes {
   ok: Boolean!
   error: String
   data: [Dish!]
-}
-
-type VerifyCodRes {
-  ok: Boolean!
-  error: String
-  data: Boolean
 }
 
 type Query {

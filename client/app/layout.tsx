@@ -1,6 +1,7 @@
 'use client'
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+import { CssBaseline } from '@mui/material'
 import './globals.css'
 
 const client = new ApolloClient({
@@ -23,14 +24,15 @@ const client = new ApolloClient({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ApolloProvider client={client}>
+      <CssBaseline />
       <html lang="en">
         {/*
         <head /> will contain the components returned by the nearest parent
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
-        <body className="flex flex-col">
+        <body className="flex min-h-screen flex-col bg-gray-800 text-white">
           <header></header>
-          <main className="flex flex-1 items-center justify-center bg-gray-800">{children}</main>
+          <main className="flex-1">{children}</main>
         </body>
       </html>
     </ApolloProvider>
