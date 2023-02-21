@@ -1,22 +1,23 @@
+import { LoginFields } from '@/auth/interfaces'
 import { Button, FormControl, FormHelperText, FormLabel, Input } from '@mui/material'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-type LoginFields = {
-  email: string
-  password: string
+type Props = {
+  loading?: boolean
+  onLogin: (data: LoginFields) => void
 }
 
-export const LoginForm = () => {
+export const LoginForm: React.FC<Props> = ({ loading = false, onLogin: onSubmit }) => {
   const { handleSubmit, formState, register } = useForm<LoginFields>()
 
   const { errors } = formState
 
-  console.log(errors)
-
-  const onSubmit: SubmitHandler<LoginFields> = (data) => {}
+  const _onSubmit: SubmitHandler<LoginFields> = (data) => {
+    onSubmit(data)
+  }
 
   return (
-    <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex flex-col gap-3" onSubmit={handleSubmit(_onSubmit)}>
       <FormControl>
         <FormLabel htmlFor="email">Email</FormLabel>
         <Input
@@ -57,15 +58,15 @@ export const LoginForm = () => {
           <FormHelperText
             error
             role="alert"
-            data-testid="email-error-message"
-            aria-invalid={!!errors.email}
+            data-testid="password-error-message"
+            aria-invalid={!!errors.password}
           >
             {errors.password.message}
           </FormHelperText>
         )}
       </FormControl>
 
-      <Button type="submit">Login</Button>
+      <Button type="submit">{loading ? 'loading...' : 'Login'}</Button>
     </form>
   )
 }

@@ -16,6 +16,7 @@ const documents = {
     "\n  query Login {\n    me {\n      ok\n      error\n      data {\n        email\n      }\n    }\n  }\n": types.LoginDocument,
     "\n  mutation CreateUser($createUserDto: CreateUserDto!) {\n    createUser(createUserArgs: $createUserDto) {\n      ok\n      error\n      data {\n        id\n        email\n        role\n      }\n    }\n  }\n": types.CreateUserDocument,
     "\n  mutation VerifyCode($verifyCodeDto: VerifyCodeDto!) {\n    verifyCode(verifyCodeArgs: $verifyCodeDto) {\n      ok\n      error\n      data\n    }\n  }\n": types.VerifyCodeDocument,
+    "\n  mutation LogIn($loginDto: LoginDto!) {\n    login(loginArgs: $loginDto) {\n      ok\n      error\n      data\n    }\n  }\n": types.LogInDocument,
 };
 
 /**
@@ -44,6 +45,10 @@ export function gql(source: "\n  mutation CreateUser($createUserDto: CreateUserD
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation VerifyCode($verifyCodeDto: VerifyCodeDto!) {\n    verifyCode(verifyCodeArgs: $verifyCodeDto) {\n      ok\n      error\n      data\n    }\n  }\n"): (typeof documents)["\n  mutation VerifyCode($verifyCodeDto: VerifyCodeDto!) {\n    verifyCode(verifyCodeArgs: $verifyCodeDto) {\n      ok\n      error\n      data\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation LogIn($loginDto: LoginDto!) {\n    login(loginArgs: $loginDto) {\n      ok\n      error\n      data\n    }\n  }\n"): (typeof documents)["\n  mutation LogIn($loginDto: LoginDto!) {\n    login(loginArgs: $loginDto) {\n      ok\n      error\n      data\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

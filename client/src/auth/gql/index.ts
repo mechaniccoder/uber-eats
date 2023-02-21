@@ -23,3 +23,13 @@ export const VERIFY_CODE = gql(/* GraphQL */ `
     }
   }
 `)
+
+export const LOGIN = gql(/* GraphQL */ `
+  mutation LogIn($loginDto: LoginDto!) {
+    login(loginArgs: $loginDto) {
+      ok
+      error
+      data
+    }
+  }
+`)
