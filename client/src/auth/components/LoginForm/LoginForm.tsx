@@ -29,6 +29,7 @@ export const LoginForm: React.FC<Props> = ({ loading = false, onLogin: onSubmit 
               message: 'Invalid email address',
             },
           })}
+          data-testid="email-input"
         />
         {errors.email && (
           <FormHelperText
@@ -53,6 +54,7 @@ export const LoginForm: React.FC<Props> = ({ loading = false, onLogin: onSubmit 
               message: 'Password must be at most 16 characters',
             },
           })}
+          data-testid="password-input"
         />
         {errors.password && (
           <FormHelperText
