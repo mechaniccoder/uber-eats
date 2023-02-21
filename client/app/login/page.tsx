@@ -3,6 +3,7 @@
 import { LoginForm } from '@/auth/components'
 import { LOGIN } from '@/auth/gql'
 import { LoginFields } from '@/auth/interfaces'
+import { useDisclosure } from '@/common/hooks'
 import { LogInMutation, LogInMutationVariables } from '@/gql/graphql'
 import { useMutation } from '@apollo/client'
 import { Alert, Container, Snackbar } from '@mui/material'
@@ -15,6 +16,8 @@ export default function LoginPage() {
     LogInMutationVariables
   >(LOGIN)
   const [open, setOpen] = useState(false)
+  const graphqlErrorSnackBarProps = useDisclosure()
+  const loginErrorSnackBarProps = useDisclosure()
 
   const router = useRouter()
 
@@ -32,21 +35,13 @@ export default function LoginPage() {
           localStorage.setItem('accessToken', accessToken)
           router.push('/')
         } else {
-          handleOpen()
+          loginErrorSnackBarProps.onOpen()
         }
       },
       onError: (err) => {
-        handleOpen()
+        graphqlErrorSnackBarProps.onOpen()
       },
     })
-  }
-
-  const handleOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
   }
 
   return (
@@ -56,16 +51,24 @@ export default function LoginPage() {
       </Container>
 
       {loginData?.login.error && (
-        <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
-          <Alert severity="error" onClose={handleClose}>
+        <Snackbar
+          open={graphqlErrorSnackBarProps.open}
+          autoHideDuration={5000}
+          onClose={graphqlErrorSnackBarProps.onClose}
+        >
+          <Alert severity="error" onClose={graphqlErrorSnackBarProps.onClose}>
             {loginData?.login.error}
           </Alert>
         </Snackbar>
       )}
 
       {loginError && (
-        <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
-          <Alert severity="error" onClose={handleClose}>
+        <Snackbar
+          open={loginErrorSnackBarProps.open}
+          autoHideDuration={5000}
+          onClose={loginErrorSnackBarProps.onClose}
+        >
+          <Alert severity="error" onClose={loginErrorSnackBarProps.onClose}>
             {loginError?.message}
           </Alert>
         </Snackbar>
