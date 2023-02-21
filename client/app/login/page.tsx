@@ -50,11 +50,11 @@ export default function LoginPage() {
 
       {loginData?.login.error && (
         <Snackbar
-          open={graphqlErrorSnackBarProps.open}
+          open={loginErrorSnackBarProps.open}
           autoHideDuration={5000}
-          onClose={graphqlErrorSnackBarProps.onClose}
+          onClose={loginErrorSnackBarProps.onClose}
         >
-          <Alert severity="error" onClose={graphqlErrorSnackBarProps.onClose}>
+          <Alert severity="error" onClose={loginErrorSnackBarProps.onClose}>
             {loginData?.login.error}
           </Alert>
         </Snackbar>
@@ -62,11 +62,11 @@ export default function LoginPage() {
 
       {loginError && (
         <Snackbar
-          open={loginErrorSnackBarProps.open}
+          open={graphqlErrorSnackBarProps.open}
           autoHideDuration={5000}
-          onClose={loginErrorSnackBarProps.onClose}
+          onClose={graphqlErrorSnackBarProps.onClose}
         >
-          <Alert severity="error" onClose={loginErrorSnackBarProps.onClose}>
+          <Alert severity="error" onClose={graphqlErrorSnackBarProps.onClose}>
             {loginError?.message}
           </Alert>
         </Snackbar>
