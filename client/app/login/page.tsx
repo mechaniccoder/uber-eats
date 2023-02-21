@@ -4,21 +4,19 @@ import { LoginForm } from '@/auth/components'
 import { LOGIN } from '@/auth/gql'
 import { LoginFields } from '@/auth/interfaces'
 import { useDisclosure } from '@/common/hooks'
+import { setLocalStorageItem } from '@/common/utils/storage'
 import { LogInMutation, LogInMutationVariables } from '@/gql/graphql'
 import { useMutation } from '@apollo/client'
 import { Alert, Container, Snackbar } from '@mui/material'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 
 export default function LoginPage() {
   const [login, { loading, data: loginData, error: loginError }] = useMutation<
     LogInMutation,
     LogInMutationVariables
   >(LOGIN)
-  const [open, setOpen] = useState(false)
   const graphqlErrorSnackBarProps = useDisclosure()
   const loginErrorSnackBarProps = useDisclosure()
-
   const router = useRouter()
 
   const handleLogin = (data: LoginFields) => {
@@ -27,12 +25,12 @@ export default function LoginPage() {
         loginDto: data,
       },
       onCompleted: ({ login }) => {
-        const { ok, data, error } = login
+        const { ok, data } = login
 
         if (ok && data) {
           const accessToken = data
 
-          localStorage.setItem('accessToken', accessToken)
+          setLocalStorageItem('accessToken', accessToken)
           router.push('/')
         } else {
           loginErrorSnackBarProps.onOpen()
