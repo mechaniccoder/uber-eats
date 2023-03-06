@@ -26,10 +26,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ApolloProvider client={client}>
       <CssBaseline />
       <html lang="en">
-        {/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
         <body className="flex min-h-screen flex-col bg-gray-800 text-white">
           <header></header>
           <main className="flex-1">{children}</main>

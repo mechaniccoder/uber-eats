@@ -41,7 +41,9 @@ describe('SignUpForm', () => {
     await user.click(submitButton)
 
     expect(handleSignUp).toHaveBeenCalledTimes(1)
-    expect(handleSignUp).toHaveBeenCalledWith()
+    expect(handleSignUp).toHaveBeenCalledWith({
+      email: testEmail,
+    })
   })
 
   it('should render required error message', async () => {

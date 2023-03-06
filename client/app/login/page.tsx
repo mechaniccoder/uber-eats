@@ -53,6 +53,7 @@ export default function LoginPage() {
           open={loginErrorSnackBarProps.open}
           autoHideDuration={5000}
           onClose={loginErrorSnackBarProps.onClose}
+          data-testid="login-error-snackbar"
         >
           <Alert severity="error" onClose={loginErrorSnackBarProps.onClose}>
             {loginData?.login.error}
@@ -65,6 +66,7 @@ export default function LoginPage() {
           open={graphqlErrorSnackBarProps.open}
           autoHideDuration={5000}
           onClose={graphqlErrorSnackBarProps.onClose}
+          data-testid="login-network-error-snackbar"
         >
           <Alert severity="error" onClose={graphqlErrorSnackBarProps.onClose}>
             {loginError?.message}
