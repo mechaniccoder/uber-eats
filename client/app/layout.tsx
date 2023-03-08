@@ -22,9 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <CssBaseline />
       <html lang="en">
         <body className="flex min-h-screen flex-col bg-gray-800 text-white">
-          <AuthRoute>
-            <main className="flex-1">{children}</main>
-          </AuthRoute>
+          <AuthRoute>{children}</AuthRoute>
         </body>
       </html>
     </ApolloProvider>
