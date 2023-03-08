@@ -33,3 +33,23 @@ export const LOGIN = gql(/* GraphQL */ `
     }
   }
 `)
+
+export const GET_ME = gql(`
+  query GetMe {
+    me {
+      ok
+      error
+      data {
+        id
+        email
+        role
+        verification {
+          isVerified
+        }
+        payments {
+          restaurantId
+        }
+      }
+    }
+  }
+`)
