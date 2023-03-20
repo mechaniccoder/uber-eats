@@ -1,5 +1,6 @@
 'use client'
 
+import { Header } from '@/common/components/Header/Header'
 import { Box } from '@mui/material'
 
 export default function HomeLayout({
@@ -9,7 +10,7 @@ export default function HomeLayout({
 }) {
   return (
     <>
-      <Box component={'header'}>This is a header</Box>
+      <Header />
       <Box component={'main'} flex={1}>
         {children}
       </Box>
