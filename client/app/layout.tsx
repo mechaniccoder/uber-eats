@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ApolloProvider client={client}>
       <CssBaseline />
       <html lang="en">
-        <body className="flex min-h-screen flex-col bg-gray-800 text-white">
+        <body className="flex min-h-screen flex-col">
           <AuthRoute>{children}</AuthRoute>
         </body>
       </html>
