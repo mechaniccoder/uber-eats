@@ -35,42 +35,6 @@ type UserWithoutPassword {
   payments: [Payment!]!
 }
 
-type CreateUserRes {
-  ok: Boolean!
-  error: String
-  data: UserWithoutPassword
-}
-
-type LoginRes {
-  ok: Boolean!
-  error: String
-  data: String
-}
-
-type MeRes {
-  ok: Boolean!
-  error: String
-  data: UserWithoutPassword
-}
-
-type ProfileRes {
-  ok: Boolean!
-  error: String
-  data: UserWithoutPassword
-}
-
-type UpdateProfileRes {
-  ok: Boolean!
-  error: String
-  data: UserWithoutPassword
-}
-
-type VerifyCodRes {
-  ok: Boolean!
-  error: String
-  data: Boolean
-}
-
 type Category {
   id: String!
   name: String!
@@ -114,6 +78,42 @@ type GetPaymentsRes {
   ok: Boolean!
   error: String
   data: [Payment!]!
+}
+
+type CreateUserRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
+type LoginRes {
+  ok: Boolean!
+  error: String
+  data: String
+}
+
+type MeRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
+type ProfileRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
+type UpdateProfileRes {
+  ok: Boolean!
+  error: String
+  data: UserWithoutPassword
+}
+
+type VerifyCodRes {
+  ok: Boolean!
+  error: String
+  data: Boolean
 }
 
 type Order {

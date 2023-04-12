@@ -1,7 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Reflector } from '@nestjs/core'
 import { GqlExecutionContext } from '@nestjs/graphql'
-import { JwtService } from 'src/jwt/jwt.service'
+import { JwtService } from '@nestjs/jwt'
 import { User } from 'src/user/schema/user.schema'
 import { UserService } from 'src/user/user.service'
 import { TRoles } from './role.decorator'
@@ -12,6 +13,7 @@ export class AuthGuard implements CanActivate {
     private reflector: Reflector,
     private jwtService: JwtService,
     private userService: UserService,
+    private configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -26,8 +28,11 @@ export class AuthGuard implements CanActivate {
 
     const { token } = gqlContext
 
-    const payload = this.jwtService.verify(token)
-    if (!this.jwtService.validatePayload(payload)) {
+    const secret = this.configService.get('JWT_PRIVATE_KEY')
+    const payload = this.jwtService.verify(token, {
+      secret,
+    })
+    if (!this.validateTokenPayload(payload)) {
       return false
     }
 
@@ -39,6 +44,10 @@ export class AuthGuard implements CanActivate {
     if (roles.includes('any')) return true
 
     return roles.includes(user.role)
+  }
+
+  private validateTokenPayload<T>(payload: unknown): payload is T & { id: string } {
+    return typeof payload === 'object' && 'id' in payload
   }
 
   private attachUserToContext(gqlContext: any, user: User) {

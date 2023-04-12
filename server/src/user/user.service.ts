@@ -1,9 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { JwtService } from '@nestjs/jwt'
 import { InjectModel } from '@nestjs/mongoose'
 import { FilterQuery } from 'mongoose'
 import { MailService } from 'src/mail/mail.service'
-import { JwtService } from '../jwt/jwt.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { LoginDto } from './dto/login.dto'
 import { UpdateProfileDto } from './dto/update-profile.dto'
@@ -14,7 +13,6 @@ import { ExistException } from './user.exception'
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: UserModel,
-    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
   ) {}
@@ -56,6 +54,7 @@ export class UserService {
     if (!passwordCorrect) throw new BadRequestException('Password not correct')
 
     const token = this.jwtService.sign({ id: user.id })
+
     return token
   }
 

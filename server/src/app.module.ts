@@ -1,5 +1,5 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { APP_FILTER, APP_GUARD } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
@@ -9,8 +9,6 @@ import * as Joi from 'joi'
 import { join } from 'path'
 import { AuthGuard } from './auth/auth.guard'
 import { AuthModule } from './auth/auth.module'
-import { JwtMiddleware } from './jwt/jwt.middleware'
-import { JwtModule } from './jwt/jwt.module'
 import { MailModule } from './mail/mail.module'
 import { OrderModule } from './order/order.module'
 import { RestaurantModule } from './restaurant'
@@ -62,7 +60,6 @@ import { UserModule } from './user/user.module'
     RestaurantModule,
     DishModule,
     UserModule,
-    JwtModule.forRoot({ privateKey: process.env.JWT_PRIVATE_KEY }),
     AuthModule,
     MailModule.forRoot({
       apiKey: process.env.MAILGUN_API_KEY,
@@ -85,11 +82,4 @@ import { UserModule } from './user/user.module'
     },
   ],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleware).forRoutes({
-      path: '/graphql',
-      method: RequestMethod.ALL,
-    })
-  }
-}
+export class AppModule {}

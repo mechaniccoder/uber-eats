@@ -1,15 +1,13 @@
-import { ArgumentsHost, Catch, HttpException, Logger } from '@nestjs/common'
-import { GqlArgumentsHost, GqlExceptionFilter } from '@nestjs/graphql'
+import { Catch, HttpException, Logger } from '@nestjs/common'
+import { GqlExceptionFilter } from '@nestjs/graphql'
 import { Response } from '../factory/response.factory'
 
 @Catch()
 export class ExceptionFilter implements GqlExceptionFilter {
   logger = new Logger()
 
-  catch(exception: HttpException, host: ArgumentsHost) {
-    const gqlHost = GqlArgumentsHost.create(host)
-    const errorCause = exception.getResponse?.() || exception.message
-    this.logger.error(errorCause)
+  catch(exception: HttpException) {
+    this.logger.error(exception.stack ?? exception)
 
     return Response.create(false, exception.name)
   }
