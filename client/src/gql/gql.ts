@@ -17,6 +17,7 @@ const documents = {
     "\n  mutation VerifyCode($verifyCodeDto: VerifyCodeDto!) {\n    verifyCode(verifyCodeArgs: $verifyCodeDto) {\n      ok\n      error\n      data\n    }\n  }\n": types.VerifyCodeDocument,
     "\n  mutation LogIn($loginDto: LoginDto!) {\n    login(loginArgs: $loginDto) {\n      ok\n      error\n      data\n    }\n  }\n": types.LogInDocument,
     "\n  query GetMe {\n    me {\n      ok\n      error\n      data {\n        id\n        email\n        role\n        verification {\n          isVerified\n        }\n        payments {\n          restaurantId\n        }\n      }\n    }\n  }\n": types.GetMeDocument,
+    "\n  query GetRestaurants($input: RestaurantsDto!) {\n    restaurants(restaurantsArgs: $input) {\n      ok\n      error\n      data {\n        id\n        name\n        img\n        address\n        category {\n            id\n            name\n            slug\n            restaurantsCount\n        }\n        owner {\n            id\n            email\n        }\n        dishes {\n            name\n            price\n            options\n        }\n        isPromoted\n      }\n    }\n  }\n": types.GetRestaurantsDocument,
 };
 
 /**
@@ -49,6 +50,10 @@ export function gql(source: "\n  mutation LogIn($loginDto: LoginDto!) {\n    log
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query GetMe {\n    me {\n      ok\n      error\n      data {\n        id\n        email\n        role\n        verification {\n          isVerified\n        }\n        payments {\n          restaurantId\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetMe {\n    me {\n      ok\n      error\n      data {\n        id\n        email\n        role\n        verification {\n          isVerified\n        }\n        payments {\n          restaurantId\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetRestaurants($input: RestaurantsDto!) {\n    restaurants(restaurantsArgs: $input) {\n      ok\n      error\n      data {\n        id\n        name\n        img\n        address\n        category {\n            id\n            name\n            slug\n            restaurantsCount\n        }\n        owner {\n            id\n            email\n        }\n        dishes {\n            name\n            price\n            options\n        }\n        isPromoted\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetRestaurants($input: RestaurantsDto!) {\n    restaurants(restaurantsArgs: $input) {\n      ok\n      error\n      data {\n        id\n        name\n        img\n        address\n        category {\n            id\n            name\n            slug\n            restaurantsCount\n        }\n        owner {\n            id\n            email\n        }\n        dishes {\n            name\n            price\n            options\n        }\n        isPromoted\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

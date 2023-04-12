@@ -1,6 +1,5 @@
 'use client'
 
-import { AuthRoute } from '@/auth/components'
 import { getLocalStorageItem } from '@/common/utils/storage'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { CssBaseline } from '@mui/material'
@@ -21,9 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ApolloProvider client={client}>
       <CssBaseline />
       <html lang="en">
-        <body className="flex min-h-screen flex-col">
-          <AuthRoute>{children}</AuthRoute>
-        </body>
+        <body className="flex min-h-screen flex-col">{children}</body>
       </html>
     </ApolloProvider>
   )
